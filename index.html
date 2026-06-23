@@ -2,154 +2,172 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Family Meal Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f7f7f5;--surface:#fff;--surface2:#f3f3f0;
-  --border:rgba(0,0,0,0.10);--border-med:rgba(0,0,0,0.18);
-  --text:#1a1a1a;--text2:#666;--text3:#aaa;
-  --blue-bg:#eef4fd;--blue-border:#b5cef5;--blue-text:#1a4fa0;
-  --green-bg:#eaf5e0;--green-border:#9dd176;--green-text:#2d5f12;--green-acc:#5a9a3a;
-  --amber-bg:#fdf3e0;--amber-border:#f0c070;--amber-text:#7a4a0a;
-  --red-bg:#fdf0f0;--red-border:#f0aaaa;--red-text:#b83030;
-  --r:10px;--rl:12px;
-  /* Day-of-week colours for menu cards (Sun=0 … Sat=6) */
-  --day0:#e040b0;--day1:#e05040;--day2:#e07830;--day3:#d4a800;
-  --day4:#4a9a30;--day5:#2080c8;--day6:#7040c0;
+  --bg:#f4f8f8;--surface:#ffffff;--surface2:#ecf4f4;--surface3:#dceeed;
+  --border:rgba(0,0,0,0.07);--border-med:rgba(0,0,0,0.13);
+  --text:#1e2e2c;--text2:#4e6e6a;--text3:#8aadaa;
+  --acc:#2a8a80;--acc-light:#e6f5f4;--acc-border:#8acfca;
+  --blue-bg:#e8f4f8;--blue-border:#80c4d8;--blue-text:#0e5a70;
+  --green-bg:#e6f5ee;--green-border:#7acca0;--green-text:#1a5e3a;--green-acc:#2a8a60;
+  --amber-bg:#fdf6e0;--amber-border:#d8b840;--amber-text:#6a4a08;
+  --red-bg:#fdf0ee;--red-border:#e8b0a8;--red-text:#b03020;
+  --r:14px;--rl:16px;
+  --shadow:0 1px 3px rgba(0,0,0,0.07),0 4px 12px rgba(0,0,0,0.05);
+  --shadow-sm:0 1px 2px rgba(0,0,0,0.05),0 2px 6px rgba(0,0,0,0.04);
+  --day0:#b050a0;--day1:#c04030;--day2:#c06020;--day3:#a08800;
+  --day4:#2a8a40;--day5:#2060b0;--day6:#5828a0;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:1rem 0.75rem 5rem;-webkit-text-size-adjust:100%}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:0 0 6rem;-webkit-text-size-adjust:100%}
 .app{max-width:680px;margin:0 auto}
-h1{font-size:18px;font-weight:600;margin-bottom:1.25rem;letter-spacing:-0.01em}
-h2{font-size:14px;font-weight:600;margin-bottom:0.75rem}
-/* Tabs — taller touch targets */
-.tabs{display:flex;background:var(--surface);border:0.5px solid var(--border-med);border-radius:var(--r);overflow:hidden;margin-bottom:1.25rem}
-.tab{flex:1;padding:11px 3px;font-size:11px;font-weight:500;background:transparent;border:none;cursor:pointer;color:var(--text3);border-right:0.5px solid var(--border);font-family:inherit;transition:background .13s,color .13s;line-height:1.2;min-height:44px}
-.tab:last-child{border-right:none}
-.tab.active{background:var(--surface2);color:var(--text);font-weight:600}
-.tab:hover:not(.active){background:var(--surface2);color:var(--text2)}
-.section{display:none}.section.active{display:block}
-.card{background:var(--surface);border:0.5px solid var(--border-med);border-radius:var(--rl);padding:0.875rem 1rem;margin-bottom:0.75rem}
-.add-card{background:var(--surface);border:0.5px solid var(--border-med);border-radius:var(--rl);padding:0.875rem 1rem;margin-bottom:1.25rem}
+h2{font-size:15px;font-weight:600;margin-bottom:0.75rem;color:var(--text)}
+/* Header */
+.app-header{background:var(--surface);border-bottom:1px solid var(--border);padding:1.25rem 1rem 0;margin-bottom:0;position:sticky;top:0;z-index:10}
+.app-header h1{font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text);letter-spacing:-0.01em;margin-bottom:0.875rem}
+.app-header h1 span{color:var(--acc)}
+/* Tabs */
+.tabs{display:flex;border-bottom:none;margin-bottom:0}
+.tab{flex:1;padding:10px 4px 12px;font-size:11.5px;font-weight:500;background:transparent;border:none;cursor:pointer;color:var(--text3);font-family:inherit;transition:color .15s;line-height:1.2;min-height:44px;position:relative}
+.tab.active{color:var(--acc);font-weight:600}
+.tab.active::after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:2.5px;background:var(--acc);border-radius:2px 2px 0 0}
+.section{display:none;padding:1rem 1rem 0}.section.active{display:block}
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:1rem;margin-bottom:0.75rem;box-shadow:var(--shadow-sm)}
+.add-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:1rem;margin-bottom:1.25rem;box-shadow:var(--shadow-sm)}
 .field{margin-bottom:0.75rem}
-.fl{font-size:11px;font-weight:600;color:var(--text3);margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:0.05em}
-/* Inputs — 16px font prevents iOS auto-zoom */
-input[type=text],input[type=date],input[type=number],textarea,select{width:100%;font-size:16px;padding:9px 10px;border:0.5px solid var(--border-med);border-radius:8px;background:var(--surface2);color:var(--text);font-family:inherit;outline:none;transition:border-color .13s,background .13s;-webkit-appearance:none}
-input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,textarea:focus,select:focus{border-color:#888;background:var(--surface)}
+.fl{font-size:11px;font-weight:600;color:var(--text3);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:0.06em}
+/* Inputs */
+input[type=text],input[type=date],input[type=number],textarea,select{width:100%;font-size:16px;padding:10px 12px;border:1.5px solid var(--border-med);border-radius:10px;background:var(--surface2);color:var(--text);font-family:inherit;outline:none;transition:border-color .15s,background .15s;-webkit-appearance:none}
+input:focus,textarea:focus,select:focus{border-color:var(--acc);background:var(--surface)}
 input[type=date]{color-scheme:light}
-textarea{resize:vertical;line-height:1.5;min-height:52px}
+textarea{resize:vertical;line-height:1.55;min-height:54px}
 input::placeholder,textarea::placeholder{color:var(--text3)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-/* Buttons — 44px min touch target */
-.btn{padding:10px 14px;font-size:14px;border:0.5px solid var(--border-med);border-radius:8px;background:var(--surface);color:var(--text);cursor:pointer;font-family:inherit;transition:background .12s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
-.btn:active{opacity:0.75}
-.btn.pri{border-color:var(--blue-border);color:var(--blue-text);background:var(--blue-bg);font-weight:600}
+/* Buttons */
+.btn{padding:10px 16px;font-size:14px;border:1.5px solid var(--border-med);border-radius:10px;background:var(--surface);color:var(--text);cursor:pointer;font-family:inherit;transition:background .12s,border-color .12s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:5px}
+.btn:active{opacity:0.72}
+.btn.pri{border-color:var(--acc);color:#fff;background:var(--acc);font-weight:600}
+.btn.pri:active{background:#a8532e}
 .btn.grn{border-color:var(--green-border);color:var(--green-text);background:var(--green-bg);font-weight:500}
 .btn.amb{border-color:var(--amber-border);color:var(--amber-text);background:var(--amber-bg);font-weight:500}
-.btn.sm{padding:8px 12px;font-size:13px;min-height:38px}
+.btn.sm{padding:8px 12px;font-size:13px;min-height:38px;border-radius:9px}
 .btn.gh{border-color:transparent;background:transparent;color:var(--text2);padding:8px 10px;font-size:13px;min-height:38px}
 .btn.gh.d{color:var(--red-text)}
 .btn.do{border-color:var(--red-border);color:var(--red-text);font-size:13px;padding:8px 12px;background:var(--red-bg);min-height:38px}
 .btn.pinon{border-color:var(--amber-border);color:var(--amber-text);background:var(--amber-bg)}
 .abr{display:flex;justify-content:flex-end;margin-top:0.5rem;gap:8px;flex-wrap:wrap}
-.iar{display:flex;gap:6px}
-.iar input{flex:1;font-size:16px;padding:9px 10px;border:0.5px solid var(--border-med);border-radius:8px;background:var(--surface2);color:var(--text);font-family:inherit;outline:none;-webkit-appearance:none}
-.iar input:focus{border-color:#888;background:var(--surface)}
-.iel{list-style:none;margin-bottom:6px}
-.iei{display:flex;align-items:center;gap:6px;padding:5px 0;font-size:14px;color:var(--text2)}
+.iar{display:flex;gap:7px}
+.iar input{flex:1;font-size:16px;padding:10px 12px;border:1.5px solid var(--border-med);border-radius:10px;background:var(--surface2);color:var(--text);font-family:inherit;outline:none;-webkit-appearance:none}
+.iar input:focus{border-color:var(--acc);background:var(--surface)}
+.iel{list-style:none;margin-bottom:7px}
+.iei{display:flex;align-items:center;gap:7px;padding:5px 0;font-size:14px;color:var(--text2)}
 .iei button{background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;padding:4px 6px;line-height:1;min-width:36px;min-height:36px;display:inline-flex;align-items:center;justify-content:center}
 .iei button:active{color:var(--red-text)}
-/* Upcoming card layout */
+/* Upcoming */
 .uc-head{display:flex;align-items:center;gap:8px;margin-bottom:0.75rem}
 .uc-date-block{flex:1}
-.uc-day{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-0.01em}
+.uc-day{font-size:14px;font-weight:600;color:var(--text)}
 .uc-datestr{font-size:12px;color:var(--text3);margin-top:1px}
 .uc-arrows{display:flex;flex-direction:column;gap:4px;flex-shrink:0}
-.arr{background:var(--surface2);border:0.5px solid var(--border-med);border-radius:6px;cursor:pointer;color:var(--text2);padding:6px 10px;font-size:13px;line-height:1;font-family:inherit;min-width:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center}
-.arr:active{background:var(--border);color:var(--text)}
+.arr{background:var(--surface2);border:1px solid var(--border-med);border-radius:8px;cursor:pointer;color:var(--text2);padding:6px 10px;font-size:12px;line-height:1;font-family:inherit;min-width:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center}
+.arr:active{background:var(--surface3);color:var(--text)}
 .arr:disabled{opacity:0.2;cursor:default}
-.uc-status{flex-shrink:0}
-.uc-fl{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
-.uc-meal{width:100%;font-size:16px;padding:9px 10px;border:0.5px solid var(--border-med);border-radius:8px;background:var(--surface2);color:var(--text);font-family:inherit;outline:none;margin-bottom:0.6rem;-webkit-appearance:none}
-.uc-meal:focus{border-color:#888;background:var(--surface)}
+.uc-fl{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:5px}
+.uc-meal{width:100%;font-size:16px;padding:10px 12px;border:1.5px solid var(--border-med);border-radius:10px;background:var(--surface2);color:var(--text);font-family:inherit;outline:none;margin-bottom:0.6rem;-webkit-appearance:none}
+.uc-meal:focus{border-color:var(--acc);background:var(--surface)}
 .ings{list-style:none;padding:0;margin:0.4rem 0 0}
-.ing{display:flex;align-items:center;gap:8px;padding:7px 0;font-size:14px;border-bottom:0.5px solid var(--border)}
+.ing{display:flex;align-items:center;gap:9px;padding:8px 0;font-size:14px;border-bottom:1px solid var(--border)}
 .ing:last-child{border-bottom:none}
-.ing input[type=checkbox]{width:20px;height:20px;cursor:pointer;accent-color:#3d80d4;flex-shrink:0}
+.ing input[type=checkbox]{width:20px;height:20px;cursor:pointer;accent-color:var(--acc);flex-shrink:0}
 .ing.dn>span{text-decoration:line-through;color:var(--text3)}
 .di{background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;padding:4px 6px;line-height:1;margin-left:auto;flex-shrink:0;min-width:36px;min-height:36px;display:inline-flex;align-items:center;justify-content:center}
 .di:active{color:var(--red-text)}
-.uc-notes{width:100%;font-size:16px;padding:8px 10px;border:0.5px solid var(--border-med);border-radius:8px;background:var(--surface2);color:var(--text);font-family:inherit;resize:vertical;line-height:1.5;min-height:52px;outline:none;margin-top:0.5rem;-webkit-appearance:none}
-.uc-notes:focus{border-color:#888;background:var(--surface)}
-.uc-footer{display:flex;gap:8px;margin-top:0.75rem;flex-wrap:wrap;align-items:center;padding-top:0.6rem;border-top:0.5px solid var(--border)}
-/* menu card — left border colour set by inline style via JS */
-.menu-card{border-left-width:4px;border-left-style:solid;border-radius:2px var(--rl) var(--rl) 2px}
-.bdg{font-size:11px;padding:3px 9px;border-radius:7px;font-weight:600;background:var(--green-bg);color:var(--green-text);border:0.5px solid var(--green-border);white-space:nowrap}
-.mtb{font-size:13px;padding:8px 12px;border:0.5px solid var(--green-border);border-radius:8px;background:var(--green-bg);color:var(--green-text);cursor:pointer;font-family:inherit;font-weight:600;min-height:40px;display:inline-flex;align-items:center}
-.mtb:active{background:#d3f0b8}
-.pb{font-size:13px;padding:8px 12px;border:0.5px solid var(--blue-border);border-radius:8px;background:var(--blue-bg);color:var(--blue-text);cursor:pointer;font-family:inherit;font-weight:600;min-height:40px;display:inline-flex;align-items:center}
-.pb:active{background:#d8e8fb}
-/* recipe picker */
-.rpicker{background:var(--surface2);border:0.5px solid var(--border-med);border-radius:var(--rl);padding:0.75rem 1rem;margin-top:0.5rem}
-.rpicker-title{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:0.5rem}
-.rpicker-list{max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;-webkit-overflow-scrolling:touch}
-.rpicker-item{display:flex;align-items:center;padding:10px 12px;border-radius:8px;background:var(--surface);border:0.5px solid var(--border);cursor:pointer;font-size:14px;transition:background .12s;min-height:44px}
-.rpicker-item:active{background:var(--blue-bg);border-color:var(--blue-border)}
-/* shopping */
-.sc{background:var(--surface);border:0.5px solid var(--border-med);border-radius:var(--rl);padding:0.875rem 1rem;margin-bottom:1rem}
-.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:8px}
-.si{display:flex;align-items:center;gap:10px;padding:9px 0;font-size:14px;border-bottom:0.5px solid var(--border)}
-.si:last-child{border-bottom:none}
-.si input[type=checkbox]{width:20px;height:20px;cursor:pointer;accent-color:#3d80d4;flex-shrink:0}
-.si.dn>span{text-decoration:line-through;color:var(--text3)}
-.cc{font-size:11px;font-weight:600;background:var(--blue-bg);color:var(--blue-text);border-radius:5px;padding:2px 7px;margin-left:auto;border:0.5px solid var(--blue-border)}
-/* recipes */
-.rc{background:var(--surface);border:0.5px solid var(--border-med);border-radius:var(--rl);padding:0.875rem 1rem;margin-bottom:0.75rem}
-.rc.pn{border-color:var(--amber-border)}
-.rn{font-size:15px;font-weight:600;color:var(--text)}
-/* Two-column recipe ingredient grid */
-.rii-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 8px;margin-bottom:4px}
-.rii{display:flex;align-items:center;gap:6px;padding:6px 0;font-size:14px;color:var(--text);border-bottom:0.5px solid var(--border)}
-.rii:last-child{border-bottom:none}
-.rii span{flex:1;min-width:0;word-break:break-word}
-.dv{height:0.5px;background:var(--border);margin:0.75rem 0}
-.mt{font-size:13px;color:var(--text2);line-height:1.6;white-space:pre-wrap;cursor:pointer}
-.mt:active{color:var(--text)}
-.mp{font-size:13px;color:var(--text3);font-style:italic;cursor:pointer;padding:6px 0;display:block}
-.rsl{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin:0.65rem 0 0.35rem}
-.sb{display:flex;align-items:center;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
-.sb span{font-size:13px;color:var(--text2)}
-.sort-btn{font-size:13px;padding:8px 12px;border:0.5px solid var(--border-med);border-radius:8px;background:var(--surface);color:var(--text2);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;min-height:38px}
-.sort-btn:active{background:var(--surface2);color:var(--text)}
-.method-area{max-height:280px;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.es{color:var(--text3);font-size:14px;font-style:italic;padding:0.5rem 0}
-/* Recipe header buttons — wrap gracefully on narrow screens */
-.rc-actions{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;align-items:flex-start}
+.uc-notes{width:100%;font-size:16px;padding:10px 12px;border:1.5px solid var(--border-med);border-radius:10px;background:var(--surface2);color:var(--text);font-family:inherit;resize:vertical;line-height:1.55;min-height:54px;outline:none;margin-top:0.5rem;-webkit-appearance:none}
+.uc-notes:focus{border-color:var(--acc);background:var(--surface)}
+.uc-footer{display:flex;gap:8px;margin-top:0.75rem;flex-wrap:wrap;align-items:center;padding-top:0.7rem;border-top:1px solid var(--border)}
+/* Menu cards */
+.menu-card{border-left-width:4px;border-left-style:solid;border-radius:4px var(--rl) var(--rl) 4px}
+.bdg{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;background:var(--green-bg);color:var(--green-text);border:1px solid var(--green-border);white-space:nowrap}
+.mtb{font-size:13px;padding:8px 14px;border:1.5px solid var(--green-border);border-radius:10px;background:var(--green-bg);color:var(--green-text);cursor:pointer;font-family:inherit;font-weight:600;min-height:40px;display:inline-flex;align-items:center;gap:5px}
+.mtb:active{background:#d0ecc0}
+.pb{font-size:13px;padding:8px 14px;border:1.5px solid var(--acc-border);border-radius:10px;background:var(--acc-light);color:var(--acc);cursor:pointer;font-family:inherit;font-weight:600;min-height:40px;display:inline-flex;align-items:center;gap:5px}
+.pb:active{background:#f5e0d5}
 /* Sync bar */
-.sync-bar{display:flex;align-items:center;gap:10px;background:var(--surface);border:0.5px solid var(--border-med);border-radius:var(--r);padding:8px 12px;margin-bottom:1rem;flex-wrap:wrap}
+.sync-bar{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:8px 12px;margin:0 1rem 1rem;flex-wrap:wrap}
 .sync-status{font-size:12px;color:var(--text3);flex:1;min-width:0}
 .sync-status.ok{color:var(--green-text)}
 .sync-status.err{color:var(--red-text)}
 .sync-status.busy{color:var(--amber-text)}
+/* Recipe picker */
+.rpicker{background:var(--surface2);border:1px solid var(--border-med);border-radius:var(--rl);padding:0.875rem 1rem;margin-top:0.5rem;box-shadow:var(--shadow)}
+.rpicker-title{font-size:11px;font-weight:600;color:var(--text3);margin-bottom:0.6rem;text-transform:uppercase;letter-spacing:0.06em}
+.rpicker-list{max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;-webkit-overflow-scrolling:touch}
+.rpicker-item{display:flex;align-items:center;padding:10px 12px;border-radius:10px;background:var(--surface);border:1px solid var(--border);cursor:pointer;font-size:14px;transition:background .12s;min-height:44px}
+.rpicker-item:active{background:var(--acc-light);border-color:var(--acc-border)}
+/* Shopping */
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:1rem;margin-bottom:1rem;box-shadow:var(--shadow-sm)}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:8px}
+.si{display:flex;align-items:center;gap:10px;padding:9px 0;font-size:14px;border-bottom:1px solid var(--border)}
+.si:last-child{border-bottom:none}
+.si input[type=checkbox]{width:20px;height:20px;cursor:pointer;accent-color:var(--acc);flex-shrink:0}
+.si.dn>span{text-decoration:line-through;color:var(--text3)}
+.cc{font-size:11px;font-weight:600;background:var(--blue-bg);color:var(--blue-text);border-radius:20px;padding:2px 8px;margin-left:auto;border:1px solid var(--blue-border)}
+/* Recipes */
+.rc{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:1rem;margin-bottom:0.75rem;box-shadow:var(--shadow-sm)}
+.rc.pn{border-color:var(--amber-border);background:var(--amber-bg)}
+.rn{font-size:15px;font-weight:600;color:var(--text)}
+.rii-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px;margin-bottom:4px}
+.rii{display:flex;align-items:center;gap:3px;padding:5px 0;font-size:14px;color:var(--text);border-bottom:1px solid var(--border)}
+.ing-pills{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+.ing-pill{display:inline-flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border-med);border-radius:20px;padding:5px 11px;font-size:13px;max-width:100%}
+.ing-pill-text{flex:1;min-width:0;word-break:break-word}
+.ing-pill-del{background:none;border:none;cursor:pointer;color:var(--text3);font-size:12px;padding:0 2px;line-height:1;flex-shrink:0;min-width:20px;min-height:20px;display:inline-flex;align-items:center;justify-content:center}
+.ing-pill-del:active{color:var(--red-text)}
+.rii:last-child{border-bottom:none}
+.rii span{flex:1;min-width:0;word-break:break-word}
+.dv{height:1px;background:var(--border);margin:0.75rem 0}
+.mt{font-size:13px;color:var(--text2);line-height:1.65;white-space:pre-wrap;cursor:pointer}
+.mt:active{color:var(--text)}
+.mp{font-size:13px;color:var(--text3);font-style:italic;cursor:pointer;padding:6px 0;display:block}
+.rsl{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin:0.65rem 0 0.4rem}
+.sb{display:flex;align-items:center;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
+.sb span{font-size:13px;color:var(--text2)}
+.sort-btn{font-size:13px;padding:8px 12px;border:1px solid var(--border-med);border-radius:9px;background:var(--surface);color:var(--text2);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;min-height:38px}
+.sort-btn:active{background:var(--surface2);color:var(--text)}
+.method-area{max-height:280px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.es{color:var(--text3);font-size:14px;font-style:italic;padding:0.5rem 0}
+.rc-actions{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;align-items:flex-start}
+/* Tags */
+.tag{display:inline-flex;align-items:center;padding:4px 11px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid transparent;cursor:pointer;transition:all .12s;white-space:nowrap;min-height:32px;user-select:none}
+.tag.off{background:var(--surface2);border-color:var(--border-med);color:var(--text3)}
+.tag.on{border-color:currentColor}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin:0.4rem 0}
 </style>
 </head>
 <body>
 <div class="app">
-  <h1>Family meal planner</h1>
-  <div class="sync-bar">
-    <span class="sync-status" id="sync-status">Not synced yet</span>
-    <button class="btn sm gh" onclick="syncPush()" id="sync-push-btn">&#8593; Save to cloud</button>
-    <button class="btn sm gh" onclick="syncPull()" id="sync-pull-btn">&#8595; Load from cloud</button>
+  <div class="app-header">
+    <h1><span>Menu</span></h1>
+    <div class="sync-bar" style="margin:0 0 0.75rem;padding:7px 10px">
+      <span class="sync-status" id="sync-status">Not synced yet</span>
+      <button class="btn sm gh" onclick="syncPush()" id="sync-push-btn" style="min-height:34px;padding:6px 10px">&#8593; Save</button>
+      <button class="btn sm gh" onclick="syncPull()" id="sync-pull-btn" style="min-height:34px;padding:6px 10px">&#8595; Load</button>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('menu')">Menu</button>
+      <button class="tab" onclick="showTab('upcoming')">Upcoming</button>
+      <button class="tab" onclick="showTab('shopping')">Shopping</button>
+      <button class="tab" onclick="showTab('recipes')">Recipes</button>
+    </div>
   </div>
-  <div class="tabs">
-    <button class="tab active" onclick="showTab('upcoming')">Upcoming</button>
-    <button class="tab" onclick="showTab('menu')">Menu (here)</button>
-    <button class="tab" onclick="showTab('shopping')">Shopping list</button>
-    <button class="tab" onclick="showTab('recipes')">Recipes</button>
-  </div>
-  <div id="tab-upcoming" class="section active"></div>
-  <div id="tab-menu" class="section"></div>
+  <div id="tab-menu" class="section active"></div>
+  <div id="tab-upcoming" class="section"></div>
   <div id="tab-shopping" class="section"></div>
   <div id="tab-recipes" class="section"></div>
 </div>
@@ -158,7 +176,6 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
 let S=JSON.parse(localStorage.getItem('mplv9')||'null')||{meals:[],extras:[],recipes:[],recipeSort:'az',catCache:{}};
 ['extras','recipes','catCache'].forEach(k=>{if(!S[k])S[k]=k==='catCache'?{}:[];});
 if(!S.recipeSort)S.recipeSort='az';
-let dRI=[];
 let openPicker=null; // meal ID of currently open recipe picker
 
 function save(){localStorage.setItem('mplv9',JSON.stringify(S));}
@@ -230,13 +247,13 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 function mById(id){return S.meals.find(m=>m.id===id);}
 
 function showTab(t){
-  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['upcoming','menu','shopping','recipes'][i]===t));
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['menu','upcoming','shopping','recipes'][i]===t));
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('tab-'+t).classList.add('active');
   openPicker=null;
   render();
 }
-function ctab(){return['upcoming','menu','shopping','recipes'][Array.from(document.querySelectorAll('.tab')).findIndex(b=>b.classList.contains('active'))];}
+function ctab(){return['menu','upcoming','shopping','recipes'][Array.from(document.querySelectorAll('.tab')).findIndex(b=>b.classList.contains('active'))];}
 function render(){const t=ctab();if(t==='upcoming')rUp();else if(t==='menu')rMenu();else if(t==='shopping')rShop();else rRec();}
 
 // ── UPCOMING ──
@@ -320,11 +337,24 @@ function rUp(){
   c.innerHTML=h;
 }
 
+let pickerTagFilter=null;
+function setPickerTag(mid,tagId){
+  pickerTagFilter=(pickerTagFilter===tagId)?null:tagId;
+  const el=document.getElementById('picker-'+mid);
+  if(el)el.outerHTML=pickerHTML(mid);
+}
 function pickerHTML(mid){
-  if(!S.recipes.length)return`<div class="rpicker"><p class="es" style="margin:0">No recipes saved yet.</p></div>`;
+  if(!S.recipes.length)return`<div class="rpicker" id="picker-${mid}"><p class="es" style="margin:0">No recipes saved yet.</p></div>`;
+  const usedTags=TAGS.filter(t=>S.recipes.some(r=>r.tags&&r.tags.includes(t.id)));
   const sorted=[...S.recipes].sort((a,b)=>a.name.localeCompare(b.name));
-  return`<div class="rpicker"><div class="rpicker-title">Pick a recipe</div>
-    <div class="rpicker-list">${sorted.map(r=>`<div class="rpicker-item" onclick="applyRecipe('${mid}','${r.id||''}','${esc(r.name)}')">${esc(r.name)}</div>`).join('')}</div>
+  const filtered=pickerTagFilter?sorted.filter(r=>r.tags&&r.tags.includes(pickerTagFilter)):sorted;
+  return`<div class="rpicker" id="picker-${mid}">
+    <div class="rpicker-title">Pick a recipe</div>
+    ${usedTags.length?`<div class="tag-row" style="margin-bottom:0.5rem">
+      ${usedTags.map(t=>tagHTML(t.id,pickerTagFilter===t.id,`setPickerTag('${mid}','${t.id}')`)).join('')}
+      ${pickerTagFilter?`<span class="tag off" onclick="setPickerTag('${mid}',null)" style="color:var(--text3)">✕ all</span>`:''}
+    </div>`:''}
+    <div class="rpicker-list">${filtered.map(r=>`<div class="rpicker-item" onclick="applyRecipe('${mid}','${r.id||''}','${esc(r.name)}')">${esc(r.name)}${(r.tags&&r.tags.length)?`<span style="margin-left:auto;display:flex;gap:3px">${r.tags.map(tid=>{const t=TAGS.find(x=>x.id===tid);return t?`<span style="font-size:11px">${t.label.split(' ')[0]}</span>`:''}).join('')}</span>`:''}</div>`).join('')}</div>
     <div style="margin-top:0.5rem"><button class="btn sm gh" onclick="togglePicker(null)">Cancel</button></div>
   </div>`;
 }
@@ -413,8 +443,18 @@ function menuDn(id){
   save();rMenu();
 }
 function setMenuDate(id,val){const m=mById(id);if(m)m.date=val;save();rMenu();}
-function setMenuMeal(id,val){const m=mById(id);if(m)m.meal=val;save();}
-function setMenuNotes(id,val){const m=mById(id);if(m)m.notes=val;save();}
+function setMenuMeal(id,val){
+  const m=mById(id);if(!m)return;m.meal=val;save();
+  // Update collapsed header text without full re-render
+  const hdr=document.getElementById('mh-'+id);
+  if(hdr)hdr.textContent=val||'';
+}
+function setMenuNotes(id,val){
+  const m=mById(id);if(!m)return;m.notes=val;save();
+  // Update collapsed notes preview without full re-render
+  const nd=document.getElementById('mn-'+id);
+  if(nd){nd.textContent=val;nd.style.display=val?'block':'none';}
+}
 
 function fmtLong(ds){
   if(!ds)return '';
@@ -427,6 +467,15 @@ function fmtLong(ds){
   return days[dt.getDay()]+' '+n+suf+' '+months[dt.getMonth()];
 }
 
+function togMenu(id){
+  const body=document.getElementById('mb-'+id);
+  const arr=document.getElementById('ma-'+id);
+  if(!body)return;
+  const open=body.style.display==='block';
+  body.style.display=open?'none':'block';
+  arr.textContent=open?'▸':'▾';
+}
+
 function rMenu(){
   const c=document.getElementById('tab-menu');
   const meals=[...S.meals.filter(m=>m.status==='ready')].sort((a,b)=>a.date.localeCompare(b.date));
@@ -434,23 +483,33 @@ function rMenu(){
   c.innerHTML=meals.map((m,pos)=>{
     const vi=m.ingredients.filter(i=>!i.done);
     return `<div class="card menu-card" style="border-left-color:${dayColour(m.date)}">
-      <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:0.6rem">
-        <div class="uc-arrows" style="margin-top:2px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="uc-arrows" style="flex-shrink:0">
           <button class="arr" onclick="menuUp('${m.id}')" ${pos===0?'disabled':''} aria-label="move up">&#9650;</button>
           <button class="arr" onclick="menuDn('${m.id}')" ${pos===meals.length-1?'disabled':''} aria-label="move down">&#9660;</button>
         </div>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">${fmtLong(m.date)}</div>
+        <button id="ma-${m.id}" onclick="togMenu('${m.id}')" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--text3);padding:4px;flex-shrink:0;min-width:24px;min-height:44px;display:flex;align-items:center;justify-content:center">&#9657;</button>
+        <div style="flex:1;min-width:0;cursor:pointer" onclick="togMenu('${m.id}')">
+          <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">${fmtLong(m.date)}</div>
+          <div id="mh-${m.id}" style="font-size:15px;font-weight:600;margin-top:2px">${esc(m.meal)||'<span style="color:var(--text3);font-style:italic;font-weight:400">no meal set</span>'}</div>
+          <div id="mn-${m.id}" style="font-size:12px;color:var(--text3);font-style:italic;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:${m.notes?'block':'none'}">${esc(m.notes||'')}</div>
+        </div>
+        <button class="mtb" onclick="finishMeal('${m.id}')" style="flex-shrink:0">&#10003;</button>
+      </div>
+      <div id="mb-${m.id}" style="display:none">
+        <div style="height:0.5px;background:var(--border);margin:0.75rem 0 0.6rem"></div>
+        <div style="margin-bottom:0.5rem">
+          <div class="uc-fl">Meal name</div>
           <input type="text" value="${esc(m.meal)}" style="font-size:16px;font-weight:600;padding:7px 9px;border:0.5px solid var(--border-med);border-radius:7px;background:var(--surface2);color:var(--text);font-family:inherit;outline:none;width:100%;-webkit-appearance:none" onchange="setMenuMeal('${m.id}',this.value)" oninput="setMenuMeal('${m.id}',this.value)" placeholder="meal name">
         </div>
-        <span class="bdg" style="flex-shrink:0;margin-top:2px">&#10003; here</span>
-      </div>
-      ${vi.length?`<ul class="ings">${vi.map((ing,j)=>{const rj=m.ingredients.indexOf(ing);return`<li class="ing"><input type="checkbox" onchange="togIMenu('${m.id}',${rj})"><span>${esc(ing.name)}</span></li>`;}).join('')}</ul>`:''}
-      <textarea class="uc-notes" placeholder="any notes..." onchange="setMenuNotes('${m.id}',this.value)" style="margin-top:0.5rem">${esc(m.notes||'')}</textarea>
-      <div style="display:flex;gap:8px;margin-top:0.75rem;padding-top:0.6rem;border-top:0.5px solid var(--border);flex-wrap:wrap">
-        <button class="mtb" onclick="finishMeal('${m.id}')">&#10003; Had this</button>
-        <button class="btn sm gh" onclick="demote('${m.id}')">&#8592; move back</button>
-        <button class="btn sm gh d" style="margin-left:auto" onclick="delM('${m.id}')">&#128465;</button>
+        ${vi.length?`<div class="uc-fl">Ingredients</div><ul class="ings">${vi.map((ing,j)=>{const rj=m.ingredients.indexOf(ing);return`<li class="ing"><input type="checkbox" onchange="togIMenu('${m.id}',${rj})"><span>${esc(ing.name)}</span></li>`;}).join('')}</ul>`:''}
+        <div class="uc-fl" style="margin-top:0.6rem">Notes</div>
+        <textarea class="uc-notes" placeholder="any notes..." onchange="setMenuNotes('${m.id}',this.value)">${esc(m.notes||'')}</textarea>
+        <div style="display:flex;gap:8px;margin-top:0.75rem;padding-top:0.6rem;border-top:0.5px solid var(--border);flex-wrap:wrap">
+          <button class="mtb" onclick="finishMeal('${m.id}')">&#10003; Had this</button>
+          <button class="btn sm gh" onclick="demote('${m.id}')">&#8592; move back</button>
+          <button class="btn sm gh d" style="margin-left:auto" onclick="delM('${m.id}')">&#128465;</button>
+        </div>
       </div>
     </div>`;
   }).join('');
@@ -515,7 +574,7 @@ function clrAllDone(){
 
 function shopRow(item){
   const k=item.display.toLowerCase().replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-  const lbl=item.count>1?`${item.count}\u00d7 ${item.display}`:item.display;
+  const lbl=item.display;
   return`<div class="si${item.done?' dn':''}"><input type="checkbox" ${item.done?'checked':''} onchange="togShopItem('${k}')"><span>${esc(lbl)}</span>${item.count>1?`<span class="cc">${item.count}</span>`:''}</div>`;
 }
 
@@ -543,20 +602,108 @@ function rShop(){
     h+=items.slice().sort((a,b)=>a.display.localeCompare(b.display)).map(shopRow).join('');
   }
   h+=`<div class="iar" style="margin-top:0.75rem"><input type="text" id="ei" placeholder="add extra item..." onkeydown="if(event.key==='Enter')addE()"><button class="btn sm pri" onclick="addE()">+ Add</button></div></div>`;
+  // Recipe suggestion box
+  h+=recSuggestHTML(items);
   c.innerHTML=h;
+}
+
+function recSuggestHTML(shopItems){
+  if(!S.recipes||!S.recipes.length)return'';
+  // Ingredients currently on the shopping list (undone only, lowercased)
+  const haveIngredients=new Set(shopItems.filter(i=>!i.done).map(i=>i.display.toLowerCase()));
+  // Meals already on the menu tab
+  const onMenu=new Set(S.meals.filter(m=>m.status==='ready').map(m=>m.meal.toLowerCase()));
+  // Score each recipe
+  const scored=S.recipes
+    .filter(r=>!onMenu.has(r.name.toLowerCase()))
+    .map(r=>{
+      const ings=r.ingredients.map(i=>i.toLowerCase());
+      if(!ings.length)return null;
+      const matched=ings.filter(i=>haveIngredients.has(i)).length;
+      const missing=ings.length-matched;
+      return{r,matched,missing,total:ings.length};
+    })
+    .filter(x=>x&&x.matched>0&&x.missing<=1)
+    .sort((a,b)=>b.matched-a.matched||a.missing-b.missing)
+    .slice(0,5);
+  if(!scored.length)return'';
+  return`<div class="sc" style="margin-top:0.75rem;border-color:var(--acc-border);background:var(--acc-light)">
+    <div class="sh" style="margin-bottom:0.6rem"><h2 style="color:var(--acc)">💡 You could make…</h2></div>
+    <p style="font-size:12px;color:var(--text2);margin-bottom:0.75rem">Recipes matching your shopping list ingredients:</p>
+    ${scored.map(({r,matched,missing})=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--acc-border)">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:14px;font-weight:600;color:var(--text)">${esc(r.name)}</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px">
+          ${matched} ingredient${matched!==1?'s':''} in list${missing===0?' — ready to make!':missing===1?' — 1 more needed':` — ${missing} more needed`}
+        </div>
+      </div>
+      <button class="pb" style="flex-shrink:0;font-size:12px;padding:6px 10px;min-height:34px" onclick="promoteRecipe('${r.id}')">+ Menu</button>
+    </div>`).join('')}
+  </div>`;
+}
+
+function promoteRecipe(rid){
+  const r=S.recipes.find(x=>x.id===rid);if(!r)return;
+  const today=tds();
+  S.meals.push({id:uid(),date:today,meal:r.name,status:'ready',ingredients:r.ingredients.map(n=>({name:n,done:false})),notes:''});
+  save();showTab('menu');
 }
 
 function addE(){const i=document.getElementById('ei');const v=i.value.trim();if(!v)return;S.extras.push({name:v,done:false});i.value='';save();rShop();setTimeout(()=>{const e=document.getElementById('ei');if(e)e.focus();},50);}
 
 // ── RECIPES ──
+const TAGS=[
+  {id:'quick',label:'⚡ Quick',color:'#2080c8'},
+  {id:'slow',label:'🕐 Slow',color:'#7040c0'},
+  {id:'easy',label:'😊 Easy',color:'#4a9a30'},
+  {id:'difficult',label:'🔥 Difficult',color:'#e05040'},
+  {id:'cheap',label:'💚 Cheap',color:'#4a9a30'},
+  {id:'expensive',label:'💸 Expensive',color:'#c05030'},
+  {id:'favourite',label:'⭐ Favourite',color:'#d4a800'},
+];
+let dRI=[];
+let activeTagFilter=null; // null = show all
+
+function tagHTML(tagId,active,onclick){
+  const t=TAGS.find(x=>x.id===tagId)||{label:tagId,color:'#888'};
+  const on=active?'on':'off';
+  return`<span class="tag ${on}" style="${active?`color:${t.color};background:${t.color}22;border-color:${t.color}`:''}" onclick="${onclick}">${t.label}</span>`;
+}
+
+function togRecTag(rid,tagId){
+  const r=S.recipes.find(x=>x.id===rid);if(!r)return;
+  if(!r.tags)r.tags=[];
+  const i=r.tags.indexOf(tagId);
+  if(i>=0)r.tags.splice(i,1);else r.tags.push(tagId);
+  save();rRec();
+}
+
+function setTagFilter(tagId){
+  activeTagFilter=(activeTagFilter===tagId)?null:tagId;
+  rRec();
+}
+
+// draft tags for new recipe
+let dTags=[];
+function togDraftTag(tagId){
+  const i=dTags.indexOf(tagId);
+  if(i>=0)dTags.splice(i,1);else dTags.push(tagId);
+  rdTags();
+}
+function rdTags(){
+  const el=document.getElementById('draft-tags');
+  if(!el)return;
+  el.innerHTML=TAGS.map(t=>tagHTML(t.id,dTags.includes(t.id),`togDraftTag('${t.id}')`)).join('');
+}
 function addDRI(){const i=document.getElementById('rii');const v=i.value.trim();if(!v)return;dRI.push(v);i.value='';rdRI();i.focus();}
 function remDRI(i){dRI.splice(i,1);rdRI();}
 function rdRI(){const el=document.getElementById('ril');if(!el)return;el.innerHTML=dRI.map((g,i)=>`<li class="iei"><span style="color:var(--text3);font-size:11px">&#8722;</span><span style="flex:1">${esc(g)}</span><button onclick="remDRI(${i})">&#10005;</button></li>`).join('');}
 function svRec(){
   const name=document.getElementById('rni').value.trim();if(!name)return;
   const method=document.getElementById('rmi').value.trim();
-  S.recipes.push({id:uid(),name,ingredients:[...dRI],method,pinned:false});
-  dRI=[];['rni','rii','rmi'].forEach(id=>document.getElementById(id).value='');
+  S.recipes.push({id:uid(),name,ingredients:[...dRI],method,pinned:false,tags:[...dTags]});
+  dRI=[];dTags=[];['rni','rii','rmi'].forEach(id=>document.getElementById(id).value='');
   save();rRec();
 }
 function delRec(id){if(confirm('Delete this recipe?')){S.recipes=S.recipes.filter(r=>r.id!==id);save();rRec();}}
@@ -573,6 +720,14 @@ function getSorted(){
   const fn={az:(a,b)=>a.name.localeCompare(b.name),za:(a,b)=>b.name.localeCompare(a.name),newest:(a,b)=>(b.id||'').localeCompare(a.id||''),oldest:(a,b)=>(a.id||'').localeCompare(b.id||'')}[S.recipeSort||'az'];
   return[...S.recipes.filter(r=>r.pinned).sort(fn),...S.recipes.filter(r=>!r.pinned).sort(fn)];
 }
+function togRec(id){
+  const body=document.getElementById('rb-'+id);
+  const arr=document.getElementById('ra-'+id);
+  if(!body)return;
+  const open=body.style.display==='block';
+  body.style.display=open?'none':'block';
+  arr.textContent=open?'▸':'▾';
+}
 function rRec(){
   const c=document.getElementById('tab-recipes');
   let h=`<div class="add-card"><h2>Add a recipe</h2>
@@ -581,42 +736,59 @@ function rRec(){
       <div class="iar"><input type="text" id="rii" placeholder="type ingredient and press enter..." onkeydown="if(event.key==='Enter')addDRI()"><button class="btn sm" onclick="addDRI()">+ Add</button></div>
     </div>
     <div class="field"><label class="fl" for="rmi">Method</label><textarea id="rmi" placeholder="cooking instructions..." rows="5"></textarea></div>
+    <div class="field"><label class="fl">Tags</label><div class="tag-row" id="draft-tags">${TAGS.map(t=>tagHTML(t.id,dTags.includes(t.id),`togDraftTag('${t.id}')`)).join('')}</div></div>
     <div class="abr"><button class="btn pri" onclick="svRec()">Save recipe</button></div>
   </div>`;
   if(!S.recipes.length){h+='<p class="es">No recipes saved yet.</p>';c.innerHTML=h;return;}
-  h+=`<div class="sb"><span>${S.recipes.length} recipe${S.recipes.length!==1?'s':''}</span><button class="sort-btn" onclick="cycSort()">&#8645; ${sortLbl()}</button></div>`;
-  h+=getSorted().map(r=>{
+  // Tag filter bar — only show tags that exist on at least one recipe
+  const usedTags=TAGS.filter(t=>S.recipes.some(r=>r.tags&&r.tags.includes(t.id)));
+  if(usedTags.length){
+    h+=`<div class="tag-row" style="margin-bottom:0.75rem">
+      ${usedTags.map(t=>tagHTML(t.id,activeTagFilter===t.id,`setTagFilter('${t.id}')`)).join('')}
+      ${activeTagFilter?`<span class="tag off" onclick="setTagFilter(null)" style="color:var(--text3)">✕ clear</span>`:''}
+    </div>`;
+  }
+  const filtered=activeTagFilter?getSorted().filter(r=>r.tags&&r.tags.includes(activeTagFilter)):getSorted();
+  h+=`<div class="sb"><span>${filtered.length} recipe${filtered.length!==1?'s':''}</span><button class="sort-btn" onclick="cycSort()">&#8645; ${sortLbl()}</button></div>`;
+  h+=filtered.map(r=>{
     const hM=r.method&&r.method.trim();
+    const rtags=(r.tags||[]);
     return`<div class="rc${r.pinned?' pn':''}">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:0.5rem">
-        <div style="display:flex;align-items:center;gap:7px;flex:1;min-width:0">
-          ${r.pinned?'<span style="color:var(--amber-text);font-size:13px;flex-shrink:0">&#128204;</span>':''}
+      <div style="display:flex;align-items:center;gap:8px">
+        <button onclick="togRec('${r.id}')" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--text3);padding:4px;flex-shrink:0;min-width:28px;min-height:44px;display:flex;align-items:center;justify-content:center" id="ra-${r.id}">&#9657;</button>
+        ${r.pinned?'<span style="color:var(--amber-text);font-size:13px;flex-shrink:0">&#128204;</span>':''}
+        <div style="flex:1;min-width:0" onclick="togRec('${r.id}')">
           <div class="rn">${esc(r.name)}</div>
         </div>
-        <div style="display:flex;gap:4px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end" class="rc-actions">
-          <button class="btn sm ${r.pinned?'pinon':'gh'}" onclick="togPin('${r.id}')" title="${r.pinned?'unpin':'pin to top'}">&#128204;</button>
-          <button class="btn sm amb" onclick="recToShop('${r.id}')">&#128722; shop</button>
-          <button class="btn sm gh d" onclick="delRec('${r.id}')" aria-label="delete">&#128465;</button>
+        <button class="btn sm amb" onclick="recToShop('${r.id}')">&#128722; shop</button>
+      </div>
+      <div id="rb-${r.id}" style="display:none">
+        <div style="height:0.5px;background:var(--border);margin:0.6rem 0"></div>
+        <div style="display:flex;justify-content:flex-end;gap:6px;margin-bottom:0.5rem">
+          <button class="btn sm ${r.pinned?'pinon':'gh'}" onclick="togPin('${r.id}')">${r.pinned?'&#128204; unpin':'&#128204; pin'}</button>
+          <button class="btn sm gh d" onclick="delRec('${r.id}')">&#128465; delete</button>
         </div>
-      </div>
-      <div style="height:0.5px;background:var(--border);margin:0 0 0.6rem"></div>
-      ${r.ingredients.length?`<div class="rsl">Ingredients</div><div class="rii-grid">${r.ingredients.map((ing,j)=>`<div class="rii"><span style="color:var(--text3);font-size:11px;flex-shrink:0">&#8722;</span><span>${esc(ing)}</span><button class="di" onclick="remRI('${r.id}',${j})" aria-label="remove">&#10005;</button></div>`).join('')}</div>`:''}
-      <div class="iar" style="margin-top:0.5rem;margin-bottom:0.5rem">
-        <input type="text" id="ria-${r.id}" placeholder="add ingredient..." onkeydown="if(event.key==='Enter')addIR('${r.id}')">
-        <button class="btn sm" onclick="addIR('${r.id}')">+ Add</button>
-      </div>
-      <div style="height:0.5px;background:var(--border);margin:0.25rem 0 0.5rem"></div>
-      <div class="rsl">Method</div>
-      <div id="md-${r.id}">${hM?`<div class="method-area"><div class="mt" onclick="sEM('${r.id}')" title="click to edit">${esc(r.method)}</div></div>`:`<div class="mp" onclick="sEM('${r.id}')">+ add method...</div>`}</div>
-      <div id="me-${r.id}" style="display:none">
-        <textarea class="ita" id="mi-${r.id}" style="font-size:13px;padding:5px 8px;border:0.5px solid var(--border-med);border-radius:7px;background:var(--surface2);color:var(--text);font-family:inherit;resize:vertical;line-height:1.5;min-height:50px;width:100%;outline:none" rows="6" onblur="svM('${r.id}')" onkeydown="if(event.key==='Escape')cEM('${r.id}')">${esc(r.method||'')}</textarea>
+        ${r.ingredients.length?`<div class="rsl">Ingredients</div><div class="ing-pills">${r.ingredients.map((ing,j)=>`<div class="ing-pill"><span class="ing-pill-text">${esc(ing)}</span><button class="ing-pill-del" onclick="remRI('${r.id}',${j})" aria-label="remove">&#10005;</button></div>`).join('')}</div>`:''}
+        <div class="iar" style="margin-top:0.5rem;margin-bottom:0.5rem">
+          <input type="text" id="ria-${r.id}" placeholder="add ingredient..." onkeydown="if(event.key==='Enter')addIR('${r.id}')">
+          <button class="btn sm" onclick="addIR('${r.id}')">+ Add</button>
+        </div>
+        <div style="height:0.5px;background:var(--border);margin:0.25rem 0 0.5rem"></div>
+        <div class="rsl">Method</div>
+        <div id="md-${r.id}">${hM?`<div class="method-area"><div class="mt" onclick="sEM('${r.id}')" title="click to edit">${esc(r.method)}</div></div>`:`<div class="mp" onclick="sEM('${r.id}')">+ add method...</div>`}</div>
+        <div id="me-${r.id}" style="display:none">
+          <textarea class="ita" id="mi-${r.id}" style="font-size:16px;padding:8px 10px;border:0.5px solid var(--border-med);border-radius:7px;background:var(--surface2);color:var(--text);font-family:inherit;resize:vertical;line-height:1.5;min-height:50px;width:100%;outline:none" rows="6" onblur="svM('${r.id}')" onkeydown="if(event.key==='Escape')cEM('${r.id}')">${esc(r.method||'')}</textarea>
+        </div>
+        <div style="height:0.5px;background:var(--border);margin:0.5rem 0"></div>
+        <div class="rsl">Tags</div>
+        <div class="tag-row">${TAGS.map(t=>tagHTML(t.id,rtags.includes(t.id),`togRecTag('${r.id}','${t.id}')`)).join('')}</div>
       </div>
     </div>`;
   }).join('');
   c.innerHTML=h;
 }
 
-rUp();
+rMenu();
 </script>
 </body>
 </html>
