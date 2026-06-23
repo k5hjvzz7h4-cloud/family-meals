@@ -165,8 +165,7 @@ function save(){localStorage.setItem('mplv9',JSON.stringify(S));}
 
 // ── JSONBIN SYNC ──
 const JB_KEY='$2a$10$r5gcMnW1wkZ0I1L0u6TshOkFeXwbw2Yh/Lh8pP30v4.E.UhJqzbOq';
-const JB_ACC='6a3a295279fa234c87d97be1';
-const JB_BIN_KEY='mplv9_binid';
+const JB_BIN='6a3a3356da38895dfeeff853';
 
 function syncSetStatus(msg,cls){
   const el=document.getElementById('sync-status');
@@ -181,38 +180,20 @@ function syncSetBusy(busy){
   });
 }
 
-async function getBinId(){
-  // Return cached bin ID, or create a new bin and store the ID
-  const cached=localStorage.getItem(JB_BIN_KEY);
-  if(cached)return cached;
-  syncSetStatus('Setting up cloud storage…','busy');
-  const resp=await fetch('https://api.jsonbin.io/v3/b',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','X-Master-Key':JB_KEY,'X-Bin-Name':'FamilyMealPlanner','X-Collection-Id':''},
-    body:JSON.stringify(S)
-  });
-  if(!resp.ok)throw new Error('Failed to create bin: '+resp.status);
-  const data=await resp.json();
-  const id=data.metadata.id;
-  localStorage.setItem(JB_BIN_KEY,id);
-  return id;
-}
-
 async function syncPush(){
   syncSetBusy(true);
   syncSetStatus('Saving to cloud…','busy');
   try{
-    const binId=await getBinId();
-    const resp=await fetch(`https://api.jsonbin.io/v3/b/${binId}`,{
+    const resp=await fetch(`https://api.jsonbin.io/v3/b/${JB_BIN}`,{
       method:'PUT',
       headers:{'Content-Type':'application/json','X-Master-Key':JB_KEY},
       body:JSON.stringify(S)
     });
-    if(!resp.ok)throw new Error('Save failed: '+resp.status);
+    if(!resp.ok)throw new Error(resp.status);
     const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-    syncSetStatus('Saved ✓ '+t+' — Bin ID: '+binId,'ok');
+    syncSetStatus('Saved to cloud ✓ '+t,'ok');
   }catch(e){
-    syncSetStatus('Save failed — check connection','err');
+    syncSetStatus('Save failed: '+e.message,'err');
     console.error(e);
   }
   syncSetBusy(false);
@@ -222,21 +203,19 @@ async function syncPull(){
   syncSetBusy(true);
   syncSetStatus('Loading from cloud…','busy');
   try{
-    const binId=await getBinId();
-    const resp=await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`,{
+    const resp=await fetch(`https://api.jsonbin.io/v3/b/${JB_BIN}/latest`,{
       headers:{'X-Master-Key':JB_KEY}
     });
-    if(!resp.ok)throw new Error('Load failed: '+resp.status);
+    if(!resp.ok)throw new Error(resp.status);
     const data=await resp.json();
     S=data.record;
     ['extras','recipes','catCache'].forEach(k=>{if(!S[k])S[k]=k==='catCache'?{}:[];});
     if(!S.recipeSort)S.recipeSort='az';
-    save();
-    render();
+    save();render();
     const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-    syncSetStatus('Loaded from cloud at '+t,'ok');
+    syncSetStatus('Loaded from cloud ✓ '+t,'ok');
   }catch(e){
-    syncSetStatus('Load failed — check connection','err');
+    syncSetStatus('Load failed: '+e.message,'err');
     console.error(e);
   }
   syncSetBusy(false);
