@@ -155,7 +155,7 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
   <div class="app-header">
     <h1><span>Menu</span></h1>
     <div class="sync-bar" style="margin:0 0 0.75rem;padding:7px 10px">
-      <span class="sync-status" id="sync-status">Not synced yet</span>
+      <span class="sync-status err" id="sync-status" style="font-weight:600">⚠ Please load before making changes</span>
       <button class="btn sm gh" onclick="syncPush()" id="sync-push-btn" style="min-height:34px;padding:6px 10px">&#8593; Save</button>
       <button class="btn sm gh" onclick="syncPull()" id="sync-pull-btn" style="min-height:34px;padding:6px 10px">&#8595; Load</button>
     </div>
@@ -170,6 +170,14 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
   <div id="tab-upcoming" class="section"></div>
   <div id="tab-shopping" class="section"></div>
   <div id="tab-recipes" class="section"></div>
+  <div id="sync-lock" onclick="syncLockTap()" style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:5;background:rgba(30,46,44,0.45);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:2rem">
+    <div style="background:var(--surface);border-radius:var(--rl);padding:2rem 1.5rem;text-align:center;box-shadow:var(--shadow);max-width:280px;width:100%">
+      <div style="font-size:2rem;margin-bottom:0.75rem">🔒</div>
+      <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:0.5rem">Load before editing</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:1.25rem;line-height:1.5">Tap Load to get the latest data and avoid overwriting changes from the other user.</div>
+      <button class="btn pri" style="width:100%" onclick="syncPull()">&#8595; Load now</button>
+    </div>
+  </div>
 </div>
 <script>
 // State: meals use stable IDs. All mutations use ID lookup, never array index from UI.
@@ -184,20 +192,37 @@ function save(){localStorage.setItem('mplv9',JSON.stringify(S));}
 const JB_KEY='$2a$10$r5gcMnW1wkZ0I1L0u6TshOkFeXwbw2Yh/Lh8pP30v4.E.UhJqzbOq';
 const JB_BIN='6a3a3356da38895dfeeff853';
 
+let synced=false;
+function setLocked(locked){
+  synced=!locked;
+  const el=document.getElementById('sync-lock');
+  if(el)el.style.display=locked?'flex':'none';
+  // Disable save button until loaded
+  const sb=document.getElementById('sync-push-btn');
+  if(sb)sb.disabled=locked;
+}
+function syncLockTap(){/* clicking overlay does nothing — must use Load button */}
+
 function syncSetStatus(msg,cls){
   const el=document.getElementById('sync-status');
   if(!el)return;
   el.textContent=msg;
   el.className='sync-status'+(cls?' '+cls:'');
+  el.style.fontWeight=cls==='err'?'600':'';
 }
 function syncSetBusy(busy){
-  ['sync-push-btn','sync-pull-btn'].forEach(id=>{
+  ['sync-pull-btn'].forEach(id=>{
     const b=document.getElementById(id);
     if(b)b.disabled=busy;
   });
+  if(!busy&&!synced){
+    const sb=document.getElementById('sync-push-btn');
+    if(sb)sb.disabled=true;
+  }
 }
 
 async function syncPush(){
+  if(!synced)return;
   syncSetBusy(true);
   syncSetStatus('Saving to cloud…','busy');
   try{
@@ -208,17 +233,21 @@ async function syncPush(){
     });
     if(!resp.ok)throw new Error(resp.status);
     const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-    syncSetStatus('Saved to cloud ✓ '+t,'ok');
+    syncSetStatus('Saved ✓ '+t,'ok');
   }catch(e){
     syncSetStatus('Save failed: '+e.message,'err');
     console.error(e);
   }
-  syncSetBusy(false);
+  const sb=document.getElementById('sync-push-btn');
+  if(sb)sb.disabled=false;
+  const pb=document.getElementById('sync-pull-btn');
+  if(pb)pb.disabled=false;
 }
 
 async function syncPull(){
-  syncSetBusy(true);
-  syncSetStatus('Loading from cloud…','busy');
+  const pb=document.getElementById('sync-pull-btn');
+  if(pb)pb.disabled=true;
+  syncSetStatus('Loading…','busy');
   try{
     const resp=await fetch(`https://api.jsonbin.io/v3/b/${JB_BIN}/latest`,{
       headers:{'X-Master-Key':JB_KEY}
@@ -230,12 +259,13 @@ async function syncPull(){
     if(!S.recipeSort)S.recipeSort='az';
     save();render();
     const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-    syncSetStatus('Loaded from cloud ✓ '+t,'ok');
+    syncSetStatus('Loaded ✓ '+t,'ok');
+    setLocked(false);
   }catch(e){
     syncSetStatus('Load failed: '+e.message,'err');
     console.error(e);
   }
-  syncSetBusy(false);
+  if(pb)pb.disabled=false;
 }
 function uid(){return Date.now()+Math.random().toString(36).slice(2);}
 function tds(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
@@ -519,23 +549,172 @@ function togIMenu(id,j){const m=mById(id);if(!m)return;m.ingredients[j].done=!m.
 
 // ── SHOPPING LIST ──
 if(!S.catCache)S.catCache={};
-const CAT_ORDER=['Fruit & Veg','Meat & Fish','Dairy & Eggs','Bakery','Tinned & Dried','Sauces & Condiments','Frozen','Drinks','Snacks & Sweets','Household & Other'];
+// Pre-seed known items so sorting works immediately without needing cloud cache
+(function seedCache(){
+  const seeds={
+    'Fruit & Veg':['apple','apples','red pepper','pepper','peppers','onion','onions','spring onion','spring onions','carrot','carrots','garlic','tomato','tomatoes','salad','cucumber','courgette','courgettes','broccoli','asparagus','mushroom','mushrooms','lettuce','sweet potato','sweet potatoes','potato','potatoes','raspberry','raspberries','strawberry','strawberries','blueberry','blueberries','pear','pears','orange','oranges','banana','bananas','lemon','lemons','lime','limes','grapes','blackberries','cherries','peach','peaches','plum','plums','mango','pineapple','melon','watermelon','avocado','avocados','kale','spinach','cabbage','cauliflower','aubergine','eggplant','celery','leek','leeks','parsnip','turnip','swede','fennel','ginger','chilli','chillies','shallots','radish','beetroot','beet','artichoke','butternut squash','pumpkin','stir fry veg','stir-fry veg'],
+    'Meat & Fish':['mince','chicken','bacon','steak','chorizo','sea bass','white fish','fish fingers','hot dogs','sausages','meatballs','burgers','pulled pork','prawns','salmon','breaded chicken','chicken goujons','chicken thighs','chicken breast','beef','pork','lamb','turkey','duck','ham','tuna','cod','haddock','mackerel','trout','dashi','bonito flakes','smoked salmon','fishcakes'],
+    'Dairy & Eggs':['cheese','cream','cream cheese','eggs','egg','butter','mozzarella','brie','cheese sauce','milk','formula','cheddar','parmesan','feta','yogurt','yoghurt','greek yoghurt','creme fraiche','sour cream','double cream','single cream','halloumi','ricotta','gouda','oat milk','almond milk','soy milk','philadelphia','custard','ghee'],
+    'Bakery':['bread','wraps','wrap','lasagne sheets','bread flour','yeast','hot dog buns','burger buns','par baked bread','panini bread','taco shells','flatbread','pitta','pita','naan','tortilla','rolls','baguette','croissant','bagel','muffin','crumpet','brioche','sourdough','focaccia','ciabatta','chapatti','roti','flour'],
+    'Tinned & Dried':['pasta','passata','noodles','chickpeas','butter beans','kidney beans','baked beans','taco beans','stock','risotto rice','rice','oats','gnocchi','tomato puree','spaghetti','penne','fusilli','tagliatelle','couscous','quinoa','lentils','black beans','coconut milk','chopped tomatoes','ramen','udon','rice noodles'],
+    'Sauces & Condiments':['soy sauce','mayo','kewpie mayo','okonomiyaki sauce','sweet chilli sauce','lemon juice','tomato puree','paprika','oil','sugar','gravy','mayonnaise','ketchup','mustard','vinegar','olive oil','pesto','honey','salt','pepper','gerkins','gherkins','miso','tahini','harissa','chilli flakes','smoked paprika','garlic powder','onion powder','cumin','turmeric','cinnamon','mixed herbs','curry powder','garam masala','stock cube','cornflour','baking powder','vanilla','fish sauce','oyster sauce','hoisin','teriyaki','mirin','rice vinegar','balsamic'],
+    'Snacks & Sweets':['crisps','fig rolls','cereal','biscuits','cookies','chocolate','nuts','almonds','cashews','peanuts','walnuts','popcorn','crackers','granola','porridge','raisins','flapjack','peanut butter'],
+    'Frozen':['fish fingers frozen','ice cream','frozen peas','frozen veg','oven chips','sweetcorn frozen','peas','sweetcorn'],
+    'Drinks':['water','juice','squash','cordial','cola','lemonade','beer','wine','gin','vodka','rum','whisky','tea','coffee'],
+    'Fresh & Chilled':['onion bhajis','onion bhaji','pie','pies','pizza toppings','coleslaw','humous','hummus','houmous','fresh pasta','fresh noodles','ready meal','quiche','sausage roll','scotch egg','dips','guacamole','tzatziki','raita'],
+    'Household & Other':['loo cleaner','bleach','nappies','loo roll','washing up liquid','toilet roll','toilet paper','kitchen roll','bin bags','washing powder','dishwasher tablets','fabric conditioner','cling film','foil','baking paper','baby wipes','wet wipes','nappy'],
+  };
+  Object.entries(seeds).forEach(([cat,items])=>items.forEach(item=>{if(!S.catCache[item])S.catCache[item]=cat;}));
+})();
+const CAT_ORDER=['Fruit & Veg','Meat & Fish','Dairy & Eggs','Fresh & Chilled','Bakery','Tinned & Dried','Sauces & Condiments','Frozen','Drinks','Snacks & Sweets','Household & Other'];
+
+const CAT_RULES=[
+  {cat:'Frozen',words:[
+    'frozen','ice cream','sorbet','ice lolly','ice lollies','oven chips','peas','sweetcorn','sweet corn',
+    'frozen peas','frozen veg','frozen vegetables','frozen fish','frozen prawns',
+    'frozen mince','frozen chicken','waffles','potato waffles',
+  ]},
+  {cat:'Fruit & Veg',words:[
+    // User's specific items
+    'apple','apples','red pepper','pepper','peppers','onion','onions','spring onion','spring onions','carrot','carrots',
+    'garlic','tomato','tomatoes','salad','cucumber','courgette','courgettes','broccoli','asparagus','mushroom','mushrooms',
+    'sweetcorn','sweet corn','corn','pea','peas','lettuce','sweet potato','sweet potatoes','potato','potatoes',
+    'raspberry','raspberries','strawberry','strawberries','blueberry','blueberries','pear','pears','orange','oranges',
+    // Other fruit
+    'banana','bananas','lemon','lemons','lime','limes','grape','grapes','blackberry','blackberries','cherry','cherries',
+    'peach','peaches','plum','plums','mango','mangoes','pineapple','melon','watermelon','avocado','avocados',
+    'fig','figs','apricot','apricots','nectarine','nectarines','kiwi','kiwis','passionfruit','pomegranate',
+    'clementine','clementines','satsuma','satsumas','grapefruit','coconut','dates','prunes','rhubarb','cranberry','cranberries',
+    'lychee','papaya','guava','plantain','persimmon','quince','gooseberry','gooseberries','elderberry',
+    // Other veg
+    'zucchini','aubergine','eggplant','cabbage','cauliflower','kale','spinach','celery','leek','leeks',
+    'parsnip','turnip','swede','fennel','ginger','chilli','chili','chilies','chillies',
+    'shallot','shallots','radish','radishes','beetroot','beet','beets','artichoke','okra','bok choy','pak choi',
+    'watercress','rocket','arugula','endive','radicchio','chicory','sprout','sprouts','brussel sprout',
+    'bean sprout','mange tout','mangetout','sugar snap','tenderstem','cavolo nero','butternut','squash','pumpkin',
+    'celeriac','kohlrabi','samphire','sea vegetable',
+    // Herbs fresh
+    'basil','parsley','coriander','cilantro','mint','thyme','rosemary','sage','dill','chive','chives','tarragon','oregano fresh','bay leaf',
+    // Stir fry
+    'stir fry veg','stir-fry veg','stir fry vegetables',
+  ]},
+  {cat:'Meat & Fish',words:[
+    // User's specific items
+    'mince','chicken','bacon','steak','chorizo','sea bass','white fish','fish fingers','hot dogs','sausages',
+    'meatballs','burgers','pulled pork','halloumi','prawns','salmon',
+    'breaded chicken','chicken goujons','chicken thighs','chicken breast',
+    // Other meat
+    'beef','pork','lamb','turkey','duck','ham','fillet','chop','chops','ribs','loin','wing','wings',
+    'venison','rabbit','veal','goat','bison','offal','liver','kidney','black pudding','chorizo',
+    'salami','pepperoni','pancetta','prosciutto','bresaola','mortadella','lardons',
+    'mince beef','turkey mince','pork mince','lamb mince',
+    // Fish & seafood
+    'tuna','cod','haddock','shrimp','crab','lobster','anchov','sardine','mackerel','trout',
+    'halibut','plaice','tilapia','mussels','clams','scallops','squid','calamari','octopus',
+    'monkfish','pollock','bream','snapper','swordfish','dashi','bonito','bonito flakes',
+    'smoked salmon','smoked haddock','smoked mackerel','fish cake','fishcake','fishcakes',
+  ]},
+  {cat:'Dairy & Eggs',words:[
+    // User's specific items
+    'cheese','cream','cream cheese','eggs','butter','mozzarella','brie','cheese sauce','milk','formula',
+    // Other dairy
+    'cheddar','parmesan','feta','camembert','gouda','ricotta','goat cheese','goat\'s cheese',
+    'halloumi','stilton','gruyere','gruyère','emmental','manchego','wensleydale','red leicester',
+    'yogurt','yoghurt','greek yoghurt','greek yogurt','creme fraiche','crème fraîche','sour cream',
+    'clotted cream','double cream','single cream','whipping cream','creme fraiche','custard','ghee',
+    'oat milk','almond milk','soy milk','rice milk','coconut milk drink','milk alternative',
+    'philadelphia','boursin','quark','fromage frais','buttermilk','condensed milk','evaporated milk',
+  ]},
+  {cat:'Bakery',words:[
+    // User's specific items
+    'bread','wraps','lasagne sheets','bread flour','yeast','hot dog buns','burger buns','par baked bread',
+    'panini bread','taco shells','flatbread','pitta','pita',
+    // Other bakery
+    'loaf','rolls','baguette','naan','tortilla','wrap','croissant','bagel','muffin','crumpet',
+    'brioche','sourdough','rye bread','ciabatta','focaccia','english muffin','scone','teacake',
+    'flour tortilla','corn tortilla','taco','flatbreads','chapatti','chapati','roti','papadum','poppadom',
+    'breadsticks','croutons','stuffing','breadcrumbs','bread crumbs',
+  ]},
+  {cat:'Tinned & Dried',words:[
+    // User's specific items
+    'pasta','passata','noodles','chickpeas','butter beans','kidney beans','baked beans','taco beans',
+    'stock','risotto rice','rice','oats','gnocchi','tomato puree',
+    // Other tinned/dried
+    'tin','tinned','canned','can of','spaghetti','penne','fusilli','tagliatelle','rigatoni','farfalle',
+    'linguine','orzo','macaroni','couscous','quinoa','lentils','lentil','black beans','cannellini',
+    'haricot','borlotti','flageolet','pearl barley','bulgar wheat','bulgur','freekeh','spelt',
+    'chopped tomatoes','plum tomatoes','coconut milk','coconut cream','sardines','anchovies',
+    'soup','broth','dhal','dal','ramen','udon','soba','rice noodles','glass noodles','egg noodles',
+    'polenta','semolina','buckwheat','amaranth','millet','grits',
+  ]},
+  {cat:'Sauces & Condiments',words:[
+    // User's specific items
+    'soy sauce','mayo','kewpie','okonomiyaki sauce','sweet chilli sauce','sweet chili sauce',
+    'lemon juice','tomato puree','paprika','oil','sugar','gravy','mayonnaise','humous','hummus','houmous',
+    // Other sauces/condiments/baking
+    'ketchup','mustard','vinegar','olive oil','vegetable oil','sesame oil','worcestershire',
+    'tabasco','hot sauce','sriracha','pesto','salsa','relish','chutney','jam','honey','maple syrup',
+    'golden syrup','treacle','marmite','vegemite','stock cube','bouillon','seasoning','spice','spices',
+    'cumin','turmeric','cayenne','cinnamon','nutmeg','mixed herbs','curry powder','garam masala',
+    'salt','ground pepper','black pepper','white pepper','brown sugar','caster sugar','icing sugar',
+    'cornflour','corn flour','baking powder','bicarbonate','bicarb','vanilla','food colouring',
+    'fish sauce','oyster sauce','hoisin','teriyaki','miso','tahini','harissa','rose water','orange blossom',
+    'za\'atar','sumac','ras el hanout','smoked paprika','chilli flakes','chili flakes','dried chilli',
+    'msg','dashi stock','mirin','sake','rice vinegar','white wine vinegar','red wine vinegar',
+    'balsamic','truffle oil','walnut oil','rapeseed oil','sunflower oil','coconut oil',
+    'bread sauce','mint sauce','horseradish','tartare sauce','hollandaise','bearnaise',
+    'coleslaw','pickles','gerkins','gherkins','pickle',
+  ]},
+  {cat:'Drinks',words:[
+    'water','juice','squash','cordial','cola','lemonade','beer','wine','spirits','gin','vodka',
+    'rum','whisky','whiskey','tea','coffee','hot chocolate','cocoa','kombucha','coconut water',
+    'prosecco','champagne','cider','ale','lager','stout','porter','mead',
+    'sparkling water','still water','tonic','soda water','energy drink','smoothie',
+  ]},
+  {cat:'Fresh & Chilled',words:[
+    'onion bhaji','onion bhajis','pie','pies','pizza toppings','fresh pasta','fresh noodles',
+    'ready meal','quiche','sausage roll','scotch egg','dips','guacamole','tzatziki','raita',
+  ]},
+  {cat:'Snacks & Sweets',words:[
+    // User's specific items
+    'crisps','fig rolls','cereal',
+    // Other snacks
+    'biscuits','cookies','chocolate','sweets','candy','nuts','almonds','cashews','peanuts',
+    'walnuts','pistachios','pecans','hazelnuts','brazil nuts','macadamia','popcorn','crackers',
+    'pretzels','granola','porridge','raisins','dried fruit','cereal bar','flapjack','rice cake',
+    'oat cake','oatcake','breadstick','tortilla chip','nachos','peanut butter','almond butter',
+    'nutella','spread','jam','marmalade','lemon curd','malt loaf','swiss roll','jaffa',
+    'digestive','hobnob','rich tea','bourbon','custard cream','shortbread','ginger nut',
+  ]},
+  {cat:'Household & Other',words:[
+    // User's specific items
+    'loo cleaner','bleach','nappies','loo roll','washing up liquid',
+    // Other household
+    'toilet roll','toilet paper','kitchen roll','tissues','bin bags','bin liners','washing powder',
+    'washing liquid','laundry','fabric conditioner','dishwasher tablet','dishwasher salt',
+    'cleaning spray','surface spray','bathroom cleaner','floor cleaner','mop','sponge','cloth',
+    'cling film','foil','baking paper','parchment','zip lock','sandwich bag','food bag',
+    'tin foil','aluminium foil','freezer bag','cling wrap',
+    'shampoo','conditioner','shower gel','soap','body wash','deodorant','toothpaste','toothbrush',
+    'razor','moisturiser','hand cream','sun cream','sunscreen','plasters','paracetamol','ibuprofen',
+    'vitamins','supplements','baby wipes','wet wipes',
+  ]},
+];
 
 async function categoriseNew(names){
   const missing=names.filter(n=>!S.catCache[n.toLowerCase()]);
   if(!missing.length)return;
-  try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:600,messages:[{role:'user',content:
-        'Categorise each of these supermarket shopping items into exactly one of these categories:\n'+
-        CAT_ORDER.join(', ')+'\n\nItems: '+missing.join(', ')+
-        '\n\nReply ONLY with a JSON object mapping each item name (lowercase, exactly as given) to its category. No other text.'}]})});
-    const data=await resp.json();
-    const text=data.content.map(b=>b.text||'').join('').replace(/```json|```/g,'').trim();
-    const parsed=JSON.parse(text);
-    Object.entries(parsed).forEach(([k,v])=>{if(CAT_ORDER.includes(v))S.catCache[k.toLowerCase()]=v;});
-    save();if(ctab()==='shopping')rShop();
-  }catch(e){}
+  let changed=false;
+  missing.forEach(name=>{
+    const nl=name.toLowerCase();
+    let found=null;
+    for(const rule of CAT_RULES){
+      if(rule.words.some(w=>nl.includes(w))){found=rule.cat;break;}
+    }
+    S.catCache[nl]=found||'Household & Other';
+    changed=true;
+  });
+  if(changed){save();if(ctab()==='shopping')rShop();}
 }
 
 function buildShopItems(){
