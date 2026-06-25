@@ -788,7 +788,6 @@ function rShop(){
       h+=ci.map(shopRow).join('');
     });
   } else {
-    h+='<p style="font-size:12px;color:var(--text3);margin-bottom:0.5rem;font-style:italic">Sorting by aisle...</p>';
     h+=items.slice().sort((a,b)=>a.display.localeCompare(b.display)).map(shopRow).join('');
   }
   h+=`<div class="iar" style="margin-top:0.75rem"><input type="text" id="ei" placeholder="add extra item..." onkeydown="if(event.key==='Enter')addE()"><button class="btn sm pri" onclick="addE()">+ Add</button></div></div>`;
@@ -900,8 +899,25 @@ function delRec(id){if(confirm('Delete this recipe?')){S.recipes=S.recipes.filte
 function togPin(id){const r=S.recipes.find(x=>x.id===id);if(r)r.pinned=!r.pinned;save();rRec();}
 function cycSort(){const o=['az','za','newest','oldest'];const i=o.indexOf(S.recipeSort||'az');S.recipeSort=o[(i+1)%o.length];save();rRec();}
 function sortLbl(){return{az:'A \u2192 Z',za:'Z \u2192 A',newest:'Newest first',oldest:'Oldest first'}[S.recipeSort||'az'];}
-function addIR(id){const i=document.getElementById('ria-'+id);const v=i.value.trim();if(!v)return;const r=S.recipes.find(x=>x.id===id);if(!r)return;r.ingredients.push(v);i.value='';save();rRec();setTimeout(()=>{const e=document.getElementById('ria-'+id);if(e)e.focus();},50);}
-function remRI(id,j){const r=S.recipes.find(x=>x.id===id);if(r)r.ingredients.splice(j,1);save();rRec();}
+function addIR(id){
+  const i=document.getElementById('ria-'+id);const v=i.value.trim();if(!v)return;
+  const r=S.recipes.find(x=>x.id===id);if(!r)return;
+  r.ingredients.push(v);i.value='';save();
+  // Update pill list in-place without collapsing card
+  const grid=document.getElementById('rig-'+id);
+  if(grid){
+    grid.innerHTML=r.ingredients.map((ing,j)=>`<div class="ing-pill"><span class="ing-pill-text">${esc(ing)}</span><button class="ing-pill-del" onclick="remRI('${id}',${j})" aria-label="remove">&#10005;</button></div>`).join('');
+  }
+  i.focus();
+}
+function remRI(id,j){
+  const r=S.recipes.find(x=>x.id===id);if(!r)return;
+  r.ingredients.splice(j,1);save();
+  const grid=document.getElementById('rig-'+id);
+  if(grid){
+    grid.innerHTML=r.ingredients.map((ing,j2)=>`<div class="ing-pill"><span class="ing-pill-text">${esc(ing)}</span><button class="ing-pill-del" onclick="remRI('${id}',${j2})" aria-label="remove">&#10005;</button></div>`).join('');
+  }
+}
 function sEM(id){document.getElementById('md-'+id).style.display='none';document.getElementById('me-'+id).style.display='block';document.getElementById('mi-'+id).focus();}
 function cEM(id){document.getElementById('md-'+id).style.display='';document.getElementById('me-'+id).style.display='none';}
 function svM(id){const r=S.recipes.find(x=>x.id===id);if(r)r.method=document.getElementById('mi-'+id).value;save();rRec();}
@@ -958,7 +974,7 @@ function rRec(){
           <button class="btn sm ${r.pinned?'pinon':'gh'}" onclick="togPin('${r.id}')">${r.pinned?'&#128204; unpin':'&#128204; pin'}</button>
           <button class="btn sm gh d" onclick="delRec('${r.id}')">&#128465; delete</button>
         </div>
-        ${r.ingredients.length?`<div class="rsl">Ingredients</div><div class="ing-pills">${r.ingredients.map((ing,j)=>`<div class="ing-pill"><span class="ing-pill-text">${esc(ing)}</span><button class="ing-pill-del" onclick="remRI('${r.id}',${j})" aria-label="remove">&#10005;</button></div>`).join('')}</div>`:''}
+        ${r.ingredients.length?`<div class="rsl">Ingredients</div><div class="ing-pills" id="rig-${r.id}">${r.ingredients.map((ing,j)=>`<div class="ing-pill"><span class="ing-pill-text">${esc(ing)}</span><button class="ing-pill-del" onclick="remRI('${r.id}',${j})" aria-label="remove">&#10005;</button></div>`).join('')}</div>`:''}
         <div class="iar" style="margin-top:0.5rem;margin-bottom:0.5rem">
           <input type="text" id="ria-${r.id}" placeholder="add ingredient..." onkeydown="if(event.key==='Enter')addIR('${r.id}')">
           <button class="btn sm" onclick="addIR('${r.id}')">+ Add</button>
@@ -979,6 +995,20 @@ function rRec(){
 }
 
 rMenu();
+
+// Auto-save to cloud when app is closed or backgrounded
+async function autoSyncPush(){
+  if(!synced)return;
+  try{
+    await fetch(`https://api.jsonbin.io/v3/b/${JB_BIN}`,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','X-Master-Key':JB_KEY},
+      body:JSON.stringify(S)
+    });
+  }catch(e){}
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')autoSyncPush();});
+window.addEventListener('pagehide',autoSyncPush);
 </script>
 </body>
 </html>
