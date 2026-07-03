@@ -78,6 +78,7 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
 .arr{background:var(--surface2);border:1px solid var(--border-med);border-radius:8px;cursor:pointer;color:var(--text2);padding:6px 10px;font-size:12px;line-height:1;font-family:inherit;min-width:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center}
 .arr:active{background:var(--surface3);color:var(--text)}
 .arr:disabled{opacity:0.2;cursor:default}
+.btn:disabled{opacity:0.4;cursor:default}
 .uc-fl{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:5px}
 .uc-meal{width:100%;font-size:16px;padding:10px 12px;border:1.5px solid var(--border-med);border-radius:10px;background:var(--surface2);color:var(--text);font-family:inherit;outline:none;margin-bottom:0.6rem;-webkit-appearance:none}
 .uc-meal:focus{border-color:var(--acc);background:var(--surface)}
@@ -129,6 +130,19 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
 .ing-pill-text{flex:1;min-width:0;word-break:break-word}
 .ing-pill-del{background:none;border:none;cursor:pointer;color:var(--text3);font-size:12px;padding:0 2px;line-height:1;flex-shrink:0;min-width:20px;min-height:20px;display:inline-flex;align-items:center;justify-content:center}
 .ing-pill-del:active{color:var(--red-text)}
+.ing-pill-add{background:none;border:none;cursor:pointer;color:var(--acc);font-size:13px;padding:0 2px;line-height:1;flex-shrink:0;min-width:20px;min-height:20px;display:inline-flex;align-items:center;justify-content:center}
+.ing-pill-add:active{color:var(--green-text)}
+.view-only-link{background:none;border:none;cursor:pointer;color:var(--text3);font-size:12.5px;text-decoration:underline;font-family:inherit;padding:6px 4px;min-height:32px}
+.view-only-link:active{color:var(--text2)}
+.reg-row{display:flex;align-items:center;gap:10px;padding:9px 0;font-size:14px;border-bottom:1px solid var(--border)}
+.reg-row:last-child{border-bottom:none}
+.reg-row span{flex:1;min-width:0;word-break:break-word;color:var(--text)}
+.reg-add-btn{background:none;border:none;cursor:pointer;color:var(--acc);font-size:18px;font-weight:600;padding:4px 6px;line-height:1;flex-shrink:0;min-width:36px;min-height:36px;display:inline-flex;align-items:center;justify-content:center;transition:color .15s}
+.reg-add-btn:active{color:var(--green-text)}
+.reg-add-btn.added{color:var(--green-text)}
+.reg-del-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;padding:4px 6px;line-height:1;flex-shrink:0;min-width:36px;min-height:36px;display:inline-flex;align-items:center;justify-content:center}
+.reg-del-btn:active{color:var(--red-text)}
+.btn.added{background:var(--green-bg);border-color:var(--green-border);color:var(--green-text)}
 .rii:last-child{border-bottom:none}
 .rii span{flex:1;min-width:0;word-break:break-word}
 .dv{height:1px;background:var(--border);margin:0.75rem 0}
@@ -164,26 +178,31 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
       <button class="tab" onclick="showTab('upcoming')">Upcoming</button>
       <button class="tab" onclick="showTab('shopping')">Shopping</button>
       <button class="tab" onclick="showTab('recipes')">Recipes</button>
+      <button class="tab" onclick="showTab('regulars')">Regulars</button>
     </div>
   </div>
   <div id="tab-menu" class="section active"></div>
   <div id="tab-upcoming" class="section"></div>
   <div id="tab-shopping" class="section"></div>
   <div id="tab-recipes" class="section"></div>
+  <div id="tab-regulars" class="section"></div>
   <div id="sync-lock" onclick="syncLockTap()" style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:5;background:rgba(30,46,44,0.45);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:2rem">
     <div style="background:var(--surface);border-radius:var(--rl);padding:2rem 1.5rem;text-align:center;box-shadow:var(--shadow);max-width:280px;width:100%">
       <div style="font-size:2rem;margin-bottom:0.75rem">🔒</div>
       <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:0.5rem">Load before editing</div>
       <div style="font-size:13px;color:var(--text2);margin-bottom:1.25rem;line-height:1.5">Tap Load to get the latest data and avoid overwriting changes from the other user.</div>
       <button class="btn pri" style="width:100%" onclick="syncPull()">&#8595; Load now</button>
+      <button class="view-only-link" style="display:block;margin:0.6rem auto 0" onclick="viewOnly()">or view menu only</button>
     </div>
   </div>
 </div>
 <script>
 // State: meals use stable IDs. All mutations use ID lookup, never array index from UI.
-let S=JSON.parse(localStorage.getItem('mplv9')||'null')||{meals:[],extras:[],recipes:[],recipeSort:'az',catCache:{}};
+let S=JSON.parse(localStorage.getItem('mplv9')||'null')||{meals:[],extras:[],recipes:[],recipeSort:'az',catCache:{},regulars:{rai:[],ryan:[],items:[]}};
 ['extras','recipes','catCache'].forEach(k=>{if(!S[k])S[k]=k==='catCache'?{}:[];});
 if(!S.recipeSort)S.recipeSort='az';
+if(!S.regulars)S.regulars={rai:[],ryan:[],items:[]};
+['rai','ryan','items'].forEach(k=>{if(!S.regulars[k])S.regulars[k]=[];});
 let openPicker=null; // meal ID of currently open recipe picker
 
 function save(){localStorage.setItem('mplv9',JSON.stringify(S));}
@@ -202,6 +221,13 @@ function setLocked(locked){
   if(sb)sb.disabled=locked;
 }
 function syncLockTap(){/* clicking overlay does nothing — must use Load button */}
+function viewOnly(){
+  // Let the person browse all tabs without loading first, but keep saving blocked
+  const el=document.getElementById('sync-lock');
+  if(el)el.style.display='none';
+  const sb=document.getElementById('sync-push-btn');
+  if(sb)sb.disabled=true;
+}
 
 function syncSetStatus(msg,cls){
   const el=document.getElementById('sync-status');
@@ -257,6 +283,8 @@ async function syncPull(){
     S=data.record;
     ['extras','recipes','catCache'].forEach(k=>{if(!S[k])S[k]=k==='catCache'?{}:[];});
     if(!S.recipeSort)S.recipeSort='az';
+    if(!S.regulars)S.regulars={rai:[],ryan:[],items:[]};
+    ['rai','ryan','items'].forEach(k=>{if(!S.regulars[k])S.regulars[k]=[];});
     save();render();
     const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
     syncSetStatus('Loaded ✓ '+t,'ok');
@@ -277,14 +305,14 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 function mById(id){return S.meals.find(m=>m.id===id);}
 
 function showTab(t){
-  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['menu','upcoming','shopping','recipes'][i]===t));
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['menu','upcoming','shopping','recipes','regulars'][i]===t));
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('tab-'+t).classList.add('active');
   openPicker=null;
   render();
 }
-function ctab(){return['menu','upcoming','shopping','recipes'][Array.from(document.querySelectorAll('.tab')).findIndex(b=>b.classList.contains('active'))];}
-function render(){const t=ctab();if(t==='upcoming')rUp();else if(t==='menu')rMenu();else if(t==='shopping')rShop();else rRec();}
+function ctab(){return['menu','upcoming','shopping','recipes','regulars'][Array.from(document.querySelectorAll('.tab')).findIndex(b=>b.classList.contains('active'))];}
+function render(){const t=ctab();if(t==='upcoming')rUp();else if(t==='menu')rMenu();else if(t==='shopping')rShop();else if(t==='recipes')rRec();else rReg();}
 
 // ── UPCOMING ──
 // The date and day-count controls at the top generate the meal slot list.
@@ -351,7 +379,7 @@ function rUp(){
         <ul class="ings" id="ings-${m.id}">${m.ingredients.map((ing,j)=>`<li class="ing${ing.done?' dn':''}"><input type="checkbox" ${ing.done?'checked':''} onchange="togI('${m.id}',${j})"><span>${esc(ing.name)}</span><button class="di" onclick="remI('${m.id}',${j})" aria-label="remove">&#10005;</button></li>`).join('')}</ul>
         <div class="iar" style="margin-top:0.4rem">
           <input type="text" id="ii-${m.id}" placeholder="add ingredient..." onkeydown="if(event.key==='Enter')addIM('${m.id}')">
-          <button class="btn sm" onclick="addIM('${m.id}')">+ Add</button>
+          <button class="btn sm" id="iadd-${m.id}" onclick="addIM('${m.id}')">+ Add</button>
         </div>
         <div class="uc-fl" style="margin-top:0.6rem">Notes</div>
         <textarea class="uc-notes" placeholder="any notes..." onchange="setNotes('${m.id}',this.value)">${esc(m.notes||'')}</textarea>
@@ -412,6 +440,7 @@ function addIM(id){
   const m=mById(id);if(!m)return;
   m.ingredients.push({name:v,done:false});
   inp.value='';save();rUp();
+  flashAdded(document.getElementById('iadd-'+id));
   setTimeout(()=>{const e=document.getElementById('ii-'+id);if(e)e.focus();},50);
 }
 function remI(id,j){const m=mById(id);if(!m)return;m.ingredients.splice(j,1);save();rUp();}
@@ -790,7 +819,7 @@ function rShop(){
   } else {
     h+=items.slice().sort((a,b)=>a.display.localeCompare(b.display)).map(shopRow).join('');
   }
-  h+=`<div class="iar" style="margin-top:0.75rem"><input type="text" id="ei" placeholder="add extra item..." onkeydown="if(event.key==='Enter')addE()"><button class="btn sm pri" onclick="addE()">+ Add</button></div></div>`;
+  h+=`<div class="iar" style="margin-top:0.75rem"><input type="text" id="ei" placeholder="add extra item..." onkeydown="if(event.key==='Enter')addE()"><button class="btn sm pri" id="eadd" onclick="addE()">+ Add</button></div></div>`;
   // Recipe suggestion box
   h+=recSuggestHTML(items);
   c.innerHTML=h;
@@ -839,7 +868,7 @@ function promoteRecipe(rid){
   save();showTab('menu');
 }
 
-function addE(){const i=document.getElementById('ei');const v=i.value.trim();if(!v)return;S.extras.push({name:v,done:false});i.value='';save();rShop();setTimeout(()=>{const e=document.getElementById('ei');if(e)e.focus();},50);}
+function addE(){const i=document.getElementById('ei');const v=i.value.trim();if(!v)return;S.extras.push({name:v,done:false});i.value='';save();rShop();flashAdded(document.getElementById('eadd'));setTimeout(()=>{const e=document.getElementById('ei');if(e)e.focus();},50);}
 
 // ── RECIPES ──
 const TAGS=[
@@ -885,7 +914,7 @@ function rdTags(){
   if(!el)return;
   el.innerHTML=TAGS.map(t=>tagHTML(t.id,dTags.includes(t.id),`togDraftTag('${t.id}')`)).join('');
 }
-function addDRI(){const i=document.getElementById('rii');const v=i.value.trim();if(!v)return;dRI.push(v);i.value='';rdRI();i.focus();}
+function addDRI(){const i=document.getElementById('rii');const v=i.value.trim();if(!v)return;dRI.push(v);i.value='';rdRI();flashAdded(document.getElementById('driadd'));i.focus();}
 function remDRI(i){dRI.splice(i,1);rdRI();}
 function rdRI(){const el=document.getElementById('ril');if(!el)return;el.innerHTML=dRI.map((g,i)=>`<li class="iei"><span style="color:var(--text3);font-size:11px">&#8722;</span><span style="flex:1">${esc(g)}</span><button onclick="remDRI(${i})">&#10005;</button></li>`).join('');}
 function svRec(){
@@ -908,6 +937,7 @@ function addIR(id){
   if(grid){
     grid.innerHTML=r.ingredients.map((ing,j)=>`<div class="ing-pill"><span class="ing-pill-text">${esc(ing)}</span><button class="ing-pill-del" onclick="remRI('${id}',${j})" aria-label="remove">&#10005;</button></div>`).join('');
   }
+  flashAdded(document.getElementById('riadd-'+id));
   i.focus();
 }
 function remRI(id,j){
@@ -921,7 +951,77 @@ function remRI(id,j){
 function sEM(id){document.getElementById('md-'+id).style.display='none';document.getElementById('me-'+id).style.display='block';document.getElementById('mi-'+id).focus();}
 function cEM(id){document.getElementById('md-'+id).style.display='';document.getElementById('me-'+id).style.display='none';}
 function svM(id){const r=S.recipes.find(x=>x.id===id);if(r)r.method=document.getElementById('mi-'+id).value;save();rRec();}
-function recToShop(id){const r=S.recipes.find(x=>x.id===id);if(!r)return;r.ingredients.forEach(name=>S.extras.push({name,done:false}));save();showTab('shopping');}
+function recToShop(id){
+  const r=S.recipes.find(x=>x.id===id);if(!r)return;
+  r.ingredients.forEach(name=>S.extras.push({name,done:false}));
+  save();
+  flashAdded(document.getElementById('shop-'+id));
+  setTimeout(()=>showTab('shopping'),450);
+}
+
+// ── REGULARS ──
+const REG_ORDER=[['rai',"Rai's lunches"],['ryan',"Ryan's lunches"],['items','Regular items']];
+function regRow(key,idx,name){
+  return`<div class="reg-row"><button class="reg-add-btn" id="reg-add-${key}-${idx}" onclick="addRegToShop('${key}',${idx})" aria-label="add to shopping list">+</button><span>${esc(name)}</span><button class="reg-del-btn" onclick="remReg('${key}',${idx})" aria-label="remove">&#10005;</button></div>`;
+}
+function addReg(key){
+  const i=document.getElementById('reg-in-'+key);
+  const v=i.value.trim();if(!v)return;
+  S.regulars[key].push(v);
+  save();rReg();
+  flashAdded(document.getElementById('regadd-'+key));
+  setTimeout(()=>{const e=document.getElementById('reg-in-'+key);if(e)e.focus();},50);
+}
+function remReg(key,idx){
+  S.regulars[key].splice(idx,1);save();rReg();
+}
+function flashAdded(btn){
+  if(!btn)return;
+  const orig=btn.innerHTML;
+  btn.classList.add('added');
+  btn.innerHTML='&#10003;';
+  btn.disabled=true;
+  setTimeout(()=>{
+    btn.classList.remove('added');
+    btn.innerHTML=orig;
+    btn.disabled=false;
+  },900);
+}
+function addRegToShop(key,idx){
+  const name=S.regulars[key][idx];if(!name)return;
+  S.extras.push({name,done:false});
+  save();
+  flashAdded(document.getElementById('reg-add-'+key+'-'+idx));
+  if(ctab()==='shopping')rShop();
+}
+function addAllReg(key){
+  const list=S.regulars[key]||[];
+  if(!list.length)return;
+  list.forEach((name,idx)=>{
+    S.extras.push({name,done:false});
+    flashAdded(document.getElementById('reg-add-'+key+'-'+idx));
+  });
+  save();
+  flashAdded(document.getElementById('addall-'+key));
+  if(ctab()==='shopping')rShop();
+}
+function rReg(){
+  const c=document.getElementById('tab-regulars');
+  c.innerHTML=REG_ORDER.map(([key,label])=>{
+    const list=S.regulars[key]||[];
+    return`<div class="card">
+      <div class="sh" style="margin-bottom:${list.length?'0.6rem':'0.4rem'}">
+        <h2 style="margin-bottom:0">${label}</h2>
+        ${list.length?`<button class="btn sm amb" id="addall-${key}" onclick="addAllReg('${key}')">+ add all</button>`:''}
+      </div>
+      ${list.length?`<div>${list.map((n,j)=>regRow(key,j,n)).join('')}</div>`:'<p class="es">Nothing added yet.</p>'}
+      <div class="iar" style="margin-top:0.5rem">
+        <input type="text" id="reg-in-${key}" placeholder="add item..." onkeydown="if(event.key==='Enter')addReg('${key}')">
+        <button class="btn sm" id="regadd-${key}" onclick="addReg('${key}')">+ Add</button>
+      </div>
+    </div>`;
+  }).join('');
+}
 function getSorted(){
   const fn={az:(a,b)=>a.name.localeCompare(b.name),za:(a,b)=>b.name.localeCompare(a.name),newest:(a,b)=>(b.id||'').localeCompare(a.id||''),oldest:(a,b)=>(a.id||'').localeCompare(b.id||'')}[S.recipeSort||'az'];
   return[...S.recipes.filter(r=>r.pinned).sort(fn),...S.recipes.filter(r=>!r.pinned).sort(fn)];
@@ -939,7 +1039,7 @@ function rRec(){
   let h=`<div class="add-card"><h2>Add a recipe</h2>
     <div class="field"><label class="fl" for="rni">Name</label><input type="text" id="rni" placeholder="e.g. chicken tikka masala" onkeydown="if(event.key==='Enter')document.getElementById('rii').focus()"></div>
     <div class="field"><label class="fl">Ingredients</label><ul class="iel" id="ril"></ul>
-      <div class="iar"><input type="text" id="rii" placeholder="type ingredient and press enter..." onkeydown="if(event.key==='Enter')addDRI()"><button class="btn sm" onclick="addDRI()">+ Add</button></div>
+      <div class="iar"><input type="text" id="rii" placeholder="type ingredient and press enter..." onkeydown="if(event.key==='Enter')addDRI()"><button class="btn sm" id="driadd" onclick="addDRI()">+ Add</button></div>
     </div>
     <div class="field"><label class="fl" for="rmi">Method</label><textarea id="rmi" placeholder="cooking instructions..." rows="5"></textarea></div>
     <div class="field"><label class="fl">Tags</label><div class="tag-row" id="draft-tags">${TAGS.map(t=>tagHTML(t.id,dTags.includes(t.id),`togDraftTag('${t.id}')`)).join('')}</div></div>
@@ -966,7 +1066,7 @@ function rRec(){
         <div style="flex:1;min-width:0" onclick="togRec('${r.id}')">
           <div class="rn">${esc(r.name)}</div>
         </div>
-        <button class="btn sm amb" onclick="recToShop('${r.id}')">&#128722; shop</button>
+        <button class="btn sm amb" id="shop-${r.id}" onclick="recToShop('${r.id}')">&#128722; shop</button>
       </div>
       <div id="rb-${r.id}" style="display:none">
         <div style="height:0.5px;background:var(--border);margin:0.6rem 0"></div>
@@ -977,7 +1077,7 @@ function rRec(){
         ${r.ingredients.length?`<div class="rsl">Ingredients</div><div class="ing-pills" id="rig-${r.id}">${r.ingredients.map((ing,j)=>`<div class="ing-pill"><span class="ing-pill-text">${esc(ing)}</span><button class="ing-pill-del" onclick="remRI('${r.id}',${j})" aria-label="remove">&#10005;</button></div>`).join('')}</div>`:''}
         <div class="iar" style="margin-top:0.5rem;margin-bottom:0.5rem">
           <input type="text" id="ria-${r.id}" placeholder="add ingredient..." onkeydown="if(event.key==='Enter')addIR('${r.id}')">
-          <button class="btn sm" onclick="addIR('${r.id}')">+ Add</button>
+          <button class="btn sm" id="riadd-${r.id}" onclick="addIR('${r.id}')">+ Add</button>
         </div>
         <div style="height:0.5px;background:var(--border);margin:0.25rem 0 0.5rem"></div>
         <div class="rsl">Method</div>
