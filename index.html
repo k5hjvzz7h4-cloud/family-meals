@@ -58,7 +58,7 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
 .btn.pri{border-color:var(--acc);color:#fff;background:var(--acc);font-weight:600}
 .btn.pri:active{background:#a8532e}
 .btn.grn{border-color:var(--green-border);color:var(--green-text);background:var(--green-bg);font-weight:500}
-.btn.amb{border-color:var(--amber-border);color:var(--amber-text);background:var(--amber-bg);font-weight:500}
+.btn.amb{border-color:var(--acc-border);color:var(--acc);background:var(--acc-light);font-weight:500}
 .btn.sm{padding:8px 12px;font-size:13px;min-height:38px;border-radius:9px}
 .btn.gh{border-color:transparent;background:transparent;color:var(--text2);padding:8px 10px;font-size:13px;min-height:38px}
 .btn.gh.d{color:var(--red-text)}
@@ -986,14 +986,10 @@ function rRec(){
         <div style="flex:1;min-width:0" onclick="togRec('${r.id}')">
           <div class="rn">${esc(r.name)}</div>
         </div>
-        <button class="btn sm amb" id="shop-${r.id}" onclick="recToShop('${r.id}')">&#128722; shop</button>
+        <button class="btn sm amb" id="shop-${r.id}" onclick="recToShop('${r.id}')">+ shop</button>
       </div>
       <div id="rb-${r.id}" style="display:none">
         <div style="height:0.5px;background:var(--border);margin:0.6rem 0"></div>
-        <div style="display:flex;justify-content:flex-end;gap:6px;margin-bottom:0.5rem">
-          <button class="btn sm ${r.pinned?'pinon':'gh'}" onclick="togPin('${r.id}')">${r.pinned?'&#128204; unpin':'&#128204; pin'}</button>
-          <button class="btn sm gh d" onclick="delRec('${r.id}')">&#128465; delete</button>
-        </div>
         ${r.ingredients.length?`<div class="rsl">Ingredients</div><div class="ing-pills" id="rig-${r.id}">${r.ingredients.map((ing,j)=>`<div class="ing-pill"><span class="ing-pill-text">${esc(ing)}</span><button class="ing-pill-del" onclick="remRI('${r.id}',${j})" aria-label="remove">&#10005;</button></div>`).join('')}</div>`:''}
         <div class="iar" style="margin-top:0.5rem;margin-bottom:0.5rem">
           <input type="text" id="ria-${r.id}" placeholder="add ingredient..." onkeydown="if(event.key==='Enter')addIR('${r.id}')">
@@ -1008,6 +1004,10 @@ function rRec(){
         <div style="height:0.5px;background:var(--border);margin:0.5rem 0"></div>
         <div class="rsl">Tags</div>
         <div class="tag-row">${TAGS.map(t=>tagHTML(t.id,rtags.includes(t.id),`togRecTag('${r.id}','${t.id}')`)).join('')}</div>
+        <div style="display:flex;gap:8px;margin-top:0.75rem;padding-top:0.6rem;border-top:0.5px solid var(--border);flex-wrap:wrap">
+          <button class="btn sm ${r.pinned?'pinon':'gh'}" onclick="togPin('${r.id}')">${r.pinned?'&#128204; unpin':'&#128204; pin'}</button>
+          <button class="btn sm gh d" style="margin-left:auto" onclick="delRec('${r.id}')">&#128465; delete</button>
+        </div>
       </div>
     </div>`;
   }).join('');
