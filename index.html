@@ -96,7 +96,25 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
 .uc-notes:focus{border-color:var(--acc);background:var(--surface)}
 .uc-footer{display:flex;gap:8px;margin-top:0.75rem;flex-wrap:wrap;align-items:center;padding-top:0.7rem;border-top:1px solid var(--border)}
 /* Menu cards */
-.menu-card{border-left-width:4px;border-left-style:solid;border-radius:4px var(--rl) var(--rl) 4px}
+.menu-card{position:relative;border-left-width:4px;border-left-style:solid;border-left-color:var(--dc,var(--green-acc));border-radius:4px var(--rl) var(--rl) 4px}
+/* Planned (not yet bought): dashed coloured edge */
+.menu-card.planned{border-left-color:transparent}
+.menu-card.planned::before{content:'';position:absolute;left:-4px;top:-1px;bottom:-1px;width:4px;border-radius:3px 0 0 3px;background:repeating-linear-gradient(to bottom,var(--dc) 0,var(--dc) 9px,transparent 9px,transparent 15px)}
+.mtb.plan{border-color:#f0b985;background:#fff1e2;color:#c2570c;font-size:20px;font-weight:700;min-width:48px;justify-content:center;line-height:1}
+.mtb.plan:active{background:#fde0c4}
+.sug-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--acc-border)}
+.sug-row:last-child{border-bottom:none}
+.picker-sug{background:var(--acc-light);border:1px solid var(--acc-border);border-radius:10px;padding:8px 10px;margin-bottom:0.6rem}
+.picker-sug .rpicker-item{margin-top:5px;flex-wrap:wrap}
+/* Save warning modal */
+.modal-bg{position:fixed;inset:0;z-index:50;background:rgba(30,46,44,0.5);display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.modal-red{background:var(--red-bg);border:2px solid var(--red-text);border-radius:var(--rl);padding:1.5rem 1.25rem;max-width:340px;width:100%;box-shadow:var(--shadow)}
+.modal-red h3{color:var(--red-text);font-size:16px;margin-bottom:0.5rem}
+.modal-red p{color:var(--red-text);font-size:14px;line-height:1.5;margin-bottom:1.1rem}
+.modal-btns{display:flex;gap:8px;flex-wrap:wrap}
+.modal-btns .btn{flex:1}
+.btn.red{background:var(--red-text);border-color:var(--red-text);color:#fff;font-weight:600}
+.btn.red:active{opacity:0.8}
 .bdg{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;background:var(--green-bg);color:var(--green-text);border:1px solid var(--green-border);white-space:nowrap}
 .mtb{font-size:13px;padding:8px 14px;border:1.5px solid var(--green-border);border-radius:10px;background:var(--green-bg);color:var(--green-text);cursor:pointer;font-family:inherit;font-weight:600;min-height:40px;display:inline-flex;align-items:center;gap:5px}
 .mtb:active{background:#d0ecc0}
@@ -175,7 +193,7 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
     <div class="sync-bar" style="margin:0 0 0.75rem;padding:7px 10px">
       <span class="sync-status err" id="sync-status" style="font-weight:600">⚠ Please load before making changes</span>
       <button class="btn sm gh" onclick="syncPush()" id="sync-push-btn" style="min-height:34px;padding:6px 10px">&#8593; Save</button>
-      <button class="btn sm gh" onclick="syncPull()" id="sync-pull-btn" style="min-height:34px;padding:6px 10px">&#8595; Load</button>
+      <button class="btn sm pri" onclick="syncPull()" id="sync-pull-btn" style="min-height:34px;padding:6px 10px">&#8595; Load</button>
     </div>
     <div class="tabs">
       <button class="tab active" onclick="showTab('menu')">Menu</button>
@@ -188,20 +206,22 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
   <div id="tab-shopping" class="section"></div>
   <div id="tab-recipes" class="section"></div>
   <div id="tab-regulars" class="section"></div>
-  <div id="sync-lock" onclick="syncLockTap()" style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:5;background:rgba(30,46,44,0.45);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;padding:2rem">
-    <div style="background:var(--surface);border-radius:var(--rl);padding:2rem 1.5rem;text-align:center;box-shadow:var(--shadow);max-width:280px;width:100%">
-      <div style="font-size:2rem;margin-bottom:0.75rem">🔒</div>
-      <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:0.5rem">Load before editing</div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:1.25rem;line-height:1.5">Tap Load to get the latest data and avoid overwriting changes from the other user.</div>
-      <button class="btn pri" style="width:100%" onclick="syncPull()">&#8595; Load now</button>
-      <button class="view-only-link" style="display:block;margin:0.6rem auto 0" onclick="viewOnly()">or view menu only</button>
+  <div id="save-warn" class="modal-bg" style="display:none">
+    <div class="modal-red">
+      <h3>&#9888; Menu not loaded</h3>
+      <p>You have not loaded the menu, saving now will overwrite any changes made by other users.</p>
+      <div class="modal-btns">
+        <button class="btn red" onclick="warnSave()">Save</button>
+        <button class="btn" onclick="warnLoad()">Load</button>
+        <button class="btn gh" onclick="warnCancel()">Cancel</button>
+      </div>
     </div>
   </div>
 </div>
 <script>
 // State: meals use stable IDs. All mutations use ID lookup, never array index from UI.
 let S=JSON.parse(localStorage.getItem('mplv9')||'null')||{meals:[],extras:[],recipes:[],recipeSort:'az',catCache:{},regulars:{rai:[],ryan:[],items:[]}};
-['extras','recipes','catCache'].forEach(k=>{if(!S[k])S[k]=k==='catCache'?{}:[];});
+['extras','recipes','catCache','later'].forEach(k=>{if(!S[k])S[k]=k==='catCache'?{}:[];});
 if(!S.recipeSort)S.recipeSort='az';
 if(!S.shopSort)S.shopSort='category';
 if(!S.regulars)S.regulars={rai:[],ryan:[],items:[]};
@@ -230,22 +250,17 @@ const JB_KEY='$2a$10$r5gcMnW1wkZ0I1L0u6TshOkFeXwbw2Yh/Lh8pP30v4.E.UhJqzbOq';
 const JB_BIN='6a3a3356da38895dfeeff853';
 
 let synced=false;
-function setLocked(locked){
-  synced=!locked;
-  const el=document.getElementById('sync-lock');
-  if(el)el.style.display=locked?'flex':'none';
-  // Disable save button until loaded
-  const sb=document.getElementById('sync-push-btn');
-  if(sb)sb.disabled=locked;
+// Load button uses the accent colour until the menu has been loaded (or deliberately saved over)
+function updateSaveBtn(){
+  const lb=document.getElementById('sync-pull-btn');
+  if(!lb)return;
+  lb.classList.toggle('pri',!synced);
+  lb.classList.toggle('gh',synced);
 }
-function syncLockTap(){/* clicking overlay does nothing — must use Load button */}
-function viewOnly(){
-  // Let the person browse all tabs without loading first, but keep saving blocked
-  const el=document.getElementById('sync-lock');
-  if(el)el.style.display='none';
-  const sb=document.getElementById('sync-push-btn');
-  if(sb)sb.disabled=true;
-}
+function setSynced(v){synced=v;updateSaveBtn();}
+function warnSave(){document.getElementById('save-warn').style.display='none';syncPush(true);}
+function warnLoad(){document.getElementById('save-warn').style.display='none';syncPull();}
+function warnCancel(){document.getElementById('save-warn').style.display='none';}
 
 function syncSetStatus(msg,cls){
   const el=document.getElementById('sync-status');
@@ -259,14 +274,14 @@ function syncSetBusy(busy){
     const b=document.getElementById(id);
     if(b)b.disabled=busy;
   });
-  if(!busy&&!synced){
-    const sb=document.getElementById('sync-push-btn');
-    if(sb)sb.disabled=true;
-  }
 }
 
-async function syncPush(){
-  if(!synced)return;
+async function syncPush(force){
+  if(!synced&&force!==true){
+    // Not loaded yet — warn before overwriting other users' changes
+    document.getElementById('save-warn').style.display='flex';
+    return;
+  }
   syncSetBusy(true);
   syncSetStatus('Saving to cloud…','busy');
   try{
@@ -278,6 +293,7 @@ async function syncPush(){
     if(!resp.ok)throw new Error(resp.status);
     const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
     syncSetStatus('Saved ✓ '+t,'ok');
+    setSynced(true);
   }catch(e){
     syncSetStatus('Save failed: '+e.message,'err');
     console.error(e);
@@ -287,6 +303,7 @@ async function syncPush(){
   const pb=document.getElementById('sync-pull-btn');
   if(pb)pb.disabled=false;
 }
+
 
 async function syncPull(){
   const pb=document.getElementById('sync-pull-btn');
@@ -299,7 +316,7 @@ async function syncPull(){
     if(!resp.ok)throw new Error(resp.status);
     const data=await resp.json();
     S=data.record;
-    ['extras','recipes','catCache'].forEach(k=>{if(!S[k])S[k]=k==='catCache'?{}:[];});
+    ['extras','recipes','catCache','later'].forEach(k=>{if(!S[k])S[k]=k==='catCache'?{}:[];});
     if(!S.recipeSort)S.recipeSort='az';
     if(!S.shopSort)S.shopSort='category';
     if(!S.regulars)S.regulars={rai:[],ryan:[],items:[]};
@@ -308,7 +325,7 @@ async function syncPull(){
     save();render();
     const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
     syncSetStatus('Loaded ✓ '+t,'ok');
-    setLocked(false);
+    setSynced(true);
   }catch(e){
     syncSetStatus('Load failed: '+e.message,'err');
     console.error(e);
@@ -356,11 +373,14 @@ function sortedMeals(){return[...S.meals].sort((a,b)=>a.date.localeCompare(b.dat
 
 let expandedMeals=new Set(); // meal IDs currently expanded
 
+function nextMealDate(){
+  const last=sortedMeals()[sortedMeals().length-1];
+  return last?addDays(last.date,1):tds();
+}
 function addMeal(){
   const id=uid();
-  const last=sortedMeals()[sortedMeals().length-1];
-  const date=last?addDays(last.date,1):tds();
-  S.meals.push({id,date,meal:'',ingredients:[],notes:''});
+  const date=nextMealDate();
+  S.meals.push({id,date,meal:'',ingredients:[],notes:'',status:'planned'});
   expandedMeals.add(id);
   save();rMenu();
   setTimeout(()=>{
@@ -372,6 +392,13 @@ function addMeal(){
 }
 function delM(id){if(confirm('Remove this meal?')){S.meals=S.meals.filter(m=>m.id!==id);expandedMeals.delete(id);save();render();}}
 function finishMeal(id){S.meals=S.meals.filter(m=>m.id!==id);expandedMeals.delete(id);save();render();}
+// Status button: planned (orange +) -> ready (green tick) -> tap again to clear the meal.
+// Meals saved before this feature have no status and are treated as ready.
+function advanceMeal(id){
+  const m=mById(id);if(!m)return;
+  if(m.status==='planned'){m.status='ready';save();render();}
+  else finishMeal(id);
+}
 
 function togMenu(id){
   if(expandedMeals.has(id))expandedMeals.delete(id);else expandedMeals.add(id);
@@ -422,12 +449,21 @@ function pickerHTML(mid){
   const filtered=pickerTagFilter?sorted.filter(r=>r.tags&&r.tags.includes(pickerTagFilter)):sorted;
   return`<div class="rpicker" id="picker-${mid}">
     <div class="rpicker-title">Pick a recipe</div>
+    ${pickerSuggestHTML(mid)}
     ${usedTags.length?`<div class="tag-row" style="margin-bottom:0.5rem">
       ${usedTags.map(t=>tagHTML(t.id,pickerTagFilter===t.id,`setPickerTag('${mid}','${t.id}')`)).join('')}
       ${pickerTagFilter?`<span class="tag off" onclick="setPickerTag('${mid}',null)" style="color:var(--text3)">✕ all</span>`:''}
     </div>`:''}
     <div class="rpicker-list">${filtered.map(r=>`<div class="rpicker-item" onclick="applyRecipe('${mid}','${r.id||''}','${esc(r.name)}')">${esc(r.name)}${(r.tags&&r.tags.length)?`<span style="margin-left:auto;display:flex;gap:3px">${r.tags.map(tid=>{const t=TAGS.find(x=>x.id===tid);return t?`<span style="font-size:11px">${t.label.split(' ')[0]}</span>`:''}).join('')}</span>`:''}</div>`).join('')}</div>
     <div style="margin-top:0.5rem"><button class="btn sm gh" onclick="togglePicker(null)">Cancel</button></div>
+  </div>`;
+}
+
+function pickerSuggestHTML(mid){
+  const sug=recSuggestions(buildShopItems());
+  if(!sug.length)return'';
+  return`<div class="picker-sug"><div class="rpicker-title" style="color:var(--acc);margin-bottom:0">💡 You could make…</div>
+    ${sug.map(({r,missing})=>`<div class="rpicker-item" onclick="applyRecipe('${mid}','${r.id}','')"><div><div style="font-weight:600">${esc(r.name)}</div><div style="font-size:12px;color:var(--text2)">${missing===0?'ready to make!':missing+' more needed'}</div></div></div>`).join('')}
   </div>`;
 }
 
@@ -455,7 +491,8 @@ function rMenu(){
     h+=meals.map(m=>{
       const isPickerOpen=openPicker===m.id;
       const isOpen=expandedMeals.has(m.id);
-      return`<div class="card menu-card" id="card-${m.id}" style="border-left-color:${dayColour(m.date)}">
+      const planned=m.status==='planned';
+      return`<div class="card menu-card${planned?' planned':''}" id="card-${m.id}" style="--dc:${dayColour(m.date)}">
       <div style="display:flex;align-items:center;gap:8px">
         <button id="ma-${m.id}" onclick="togMenu('${m.id}')" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--text3);padding:4px;flex-shrink:0;min-width:24px;min-height:44px;display:flex;align-items:center;justify-content:center">${isOpen?'&#9660;':'&#9654;'}</button>
         <div style="flex:1;min-width:0;cursor:pointer" onclick="togMenu('${m.id}')">
@@ -463,7 +500,9 @@ function rMenu(){
           <div id="mh-${m.id}" style="font-size:15px;font-weight:600;margin-top:2px">${esc(m.meal)||'<span style="color:var(--text3);font-style:italic;font-weight:400">no meal set</span>'}</div>
           <div id="mn-${m.id}" style="font-size:12px;color:var(--text3);font-style:italic;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:${m.notes?'block':'none'}">${esc(m.notes||'')}</div>
         </div>
-        <button class="mtb" onclick="finishMeal('${m.id}')" style="flex-shrink:0" aria-label="had this meal">&#10003;</button>
+        ${planned
+          ?`<button class="mtb plan" onclick="advanceMeal('${m.id}')" style="flex-shrink:0" aria-label="planned - tap when ingredients are bought">+</button>`
+          :`<button class="mtb" onclick="advanceMeal('${m.id}')" style="flex-shrink:0" aria-label="had this meal">&#10003;</button>`}
       </div>
       <div id="mb-${m.id}" style="display:${isOpen?'block':'none'}">
         <div style="height:0.5px;background:var(--border);margin:0.75rem 0 0.6rem"></div>
@@ -493,6 +532,7 @@ function rMenu(){
     }).join('');
   }
   h+=`<button class="btn pri" style="width:100%;margin-top:${meals.length?'0.25rem':'0'}" onclick="addMeal()">+ Add meal</button>`;
+  h+=recSuggestHTML(buildShopItems());
   c.innerHTML=h;
 }
 
@@ -663,32 +703,32 @@ function buildShopItems(){
 function togShopItem(key){
   const item=buildShopItems().find(it=>it.display.toLowerCase()===key);
   if(!item)return;
+  // Ticking only marks items done (struck through) everywhere they appear, including
+  // the meal cards on the Menu tab. Nothing is removed until "Clear done" is pressed.
   const nd=!item.done;
-  if(nd){
-    // Being ticked off as bought — remove it from any originating meal card entirely.
-    // Group by meal and splice from highest index down so earlier indices stay valid.
-    const byMeal={};
-    item.sources.forEach(s=>{
-      if(s.type==='meal')(byMeal[s.id]=byMeal[s.id]||[]).push(s.j);
-      else S.extras[s.i].done=true;
-    });
-    Object.entries(byMeal).forEach(([mid,idxs])=>{
-      const m=mById(mid);if(!m)return;
-      idxs.sort((a,b)=>b-a).forEach(j=>m.ingredients.splice(j,1));
-    });
-  } else {
-    item.sources.forEach(s=>{
-      if(s.type==='meal'){const m=mById(s.id);if(m&&m.ingredients[s.j])m.ingredients[s.j].done=false;}
-      else S.extras[s.i].done=false;
-    });
-  }
+  item.sources.forEach(s=>{
+    if(s.type==='meal'){const m=mById(s.id);if(m&&m.ingredients[s.j])m.ingredients[s.j].done=nd;}
+    else if(S.extras[s.i])S.extras[s.i].done=nd;
+  });
   save();rShop();
   if(ctab()==='menu')rMenu();
+}
+function togLater(i){
+  if(!S.later[i])return;
+  S.later[i].done=!S.later[i].done;
+  save();rShop();
+}
+function addL(){
+  const i=document.getElementById('li');const v=i.value.trim();if(!v)return;
+  S.later.push({name:v,done:false});i.value='';save();rShop();
+  flashAdded(document.getElementById('ladd'));
+  setTimeout(()=>{const e=document.getElementById('li');if(e)e.focus();},50);
 }
 
 function clrAllDone(){
   S.meals.forEach(m=>{m.ingredients=m.ingredients.filter(i=>!i.done);});
   S.extras=S.extras.filter(e=>!e.done);
+  S.later=(S.later||[]).filter(e=>!e.done);
   save();rShop();
   if(ctab()==='menu')rMenu();
 }
@@ -719,7 +759,7 @@ function toggleShopSort(){
 function rShop(){
   const c=document.getElementById('tab-shopping');
   const items=buildShopItems();
-  const anyDone=items.some(it=>it.done);
+  const anyDone=items.some(it=>it.done)||S.later.some(e=>e.done);
   const uncatNames=items.filter(it=>!it.cat).map(it=>it.display);
   if(uncatNames.length)categoriseNew(uncatNames);
   const allCat=items.every(it=>it.cat);
@@ -740,19 +780,22 @@ function rShop(){
     });
   }
   h+=`<div class="iar" style="margin-top:0.75rem"><input type="text" id="ei" placeholder="add extra item..." onkeydown="if(event.key==='Enter')addE()"><button class="btn sm pri" id="eadd" onclick="addE()">+ Add</button></div></div>`;
+  // Non-urgent list (manually added items only)
+  h+=`<div class="sc"><div class="sh"><h2>Non-urgent</h2></div>
+    ${S.later.length?S.later.map((e,i)=>`<div class="si${e.done?' dn':''}"><input type="checkbox" ${e.done?'checked':''} onchange="togLater(${i})"><span>${esc(e.name)}</span></div>`).join(''):'<p class="es">Nothing non-urgent.</p>'}
+    <div class="iar" style="margin-top:0.75rem"><input type="text" id="li" placeholder="add non-urgent item..." onkeydown="if(event.key==='Enter')addL()"><button class="btn sm pri" id="ladd" onclick="addL()">+ Add</button></div></div>`;
   // Recipe suggestion box
   h+=recSuggestHTML(items);
   c.innerHTML=h;
 }
 
-function recSuggestHTML(shopItems){
-  if(!S.recipes||!S.recipes.length)return'';
+function recSuggestions(shopItems){
+  if(!S.recipes||!S.recipes.length)return[];
   // Ingredients currently on the shopping list (undone only, lowercased)
   const haveIngredients=new Set(shopItems.filter(i=>!i.done).map(i=>i.display.toLowerCase()));
   // Meals already on the menu tab
   const onMenu=new Set(S.meals.filter(m=>m.meal).map(m=>m.meal.toLowerCase()));
-  // Score each recipe
-  const scored=S.recipes
+  return S.recipes
     .filter(r=>!onMenu.has(r.name.toLowerCase()))
     .map(r=>{
       const ings=r.ingredients.map(i=>i.toLowerCase());
@@ -764,12 +807,16 @@ function recSuggestHTML(shopItems){
     .filter(x=>x&&x.matched>0&&x.missing<=1)
     .sort((a,b)=>b.matched-a.matched||a.missing-b.missing)
     .slice(0,5);
+}
+
+function recSuggestHTML(shopItems){
+  const scored=recSuggestions(shopItems);
   if(!scored.length)return'';
   return`<div class="sc" style="margin-top:0.75rem;border-color:var(--acc-border);background:var(--acc-light)">
     <div class="sh" style="margin-bottom:0.6rem"><h2 style="color:var(--acc)">💡 You could make…</h2></div>
     <p style="font-size:12px;color:var(--text2);margin-bottom:0.75rem">Recipes matching your shopping list ingredients:</p>
     ${scored.map(({r,matched,missing})=>`
-    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--acc-border)">
+    <div class="sug-row">
       <div style="flex:1;min-width:0">
         <div style="font-size:14px;font-weight:600;color:var(--text)">${esc(r.name)}</div>
         <div style="font-size:12px;color:var(--text2);margin-top:2px">
@@ -783,8 +830,7 @@ function recSuggestHTML(shopItems){
 
 function promoteRecipe(rid){
   const r=S.recipes.find(x=>x.id===rid);if(!r)return;
-  const today=tds();
-  S.meals.push({id:uid(),date:today,meal:r.name,ingredients:r.ingredients.map(n=>({name:n,done:false})),notes:''});
+  S.meals.push({id:uid(),date:nextMealDate(),meal:r.name,ingredients:r.ingredients.map(n=>({name:n,done:false})),notes:'',status:'planned'});
   save();showTab('menu');
 }
 
@@ -1014,6 +1060,7 @@ function rRec(){
   c.innerHTML=h;
 }
 
+updateSaveBtn();
 rMenu();
 
 // Auto-save to cloud when app is closed or backgrounded
